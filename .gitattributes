@@ -1,0 +1,21 @@
+* text=auto
+
+# Normalizar finales de linea a LF para archivos de código
+*.js   text eol=lf
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.mjs  text eol=lf
+*.cjs  text eol=lf
+*.json text eol=lf
+*.css  text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.svg  text eol=lf
+
+# Mantener binarios tal cual
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
