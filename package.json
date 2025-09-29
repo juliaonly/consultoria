@@ -8,7 +8,10 @@
                     "build":  "node ./scripts/run-next.js build",
                     "build:turbopack":  "node ./scripts/run-next.js build --turbopack",
                     "start":  "node ./scripts/run-next.js start",
-                    "lint":  "node ./scripts/run-next.js lint"
+                    "lint":  "node ./scripts/run-next.js lint",
+                    "vercel:link": "pnpm dlx vercel link --yes",
+                    "deploy:preview": "pnpm dlx vercel --prebuilt",
+                    "deploy:prod": "pnpm dlx vercel deploy --prod --prebuilt || pnpm dlx vercel --prod"
                 },
     "dependencies":  {
                          "clsx":  "^2.1.1",
