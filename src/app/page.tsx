@@ -1,0 +1,613 @@
+"use client";
+
+import Link from "next/link";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { Reveal } from "../components/reveal";
+
+const navigation = [
+  { label: "Soluciones", href: "#soluciones" },
+  { label: "Casos", href: "#casos" },
+  { label: "Metodologia", href: "#metodologia" },
+  { label: "Contacto", href: "#contacto" },
+];
+
+const metrics = [
+  {
+    label: "Implementaciones enterprise",
+    value: "120+",
+    description:
+      "Sistemas desplegados en 7 paises con soporte continuo y gobernanza de datos.",
+  },
+  {
+    label: "Integraciones criticas",
+    value: "45",
+    description:
+      "Conectamos IA con ERPs, CRMs y nubes hibridas manteniendo observabilidad.",
+  },
+  {
+    label: "Tiempo de entrega",
+    value: "6 semanas",
+    description:
+      "Del kickoff ejecutivo al primer release medible y listo para escalar.",
+  },
+];
+
+const services = [
+  {
+    title: "Arquitectura de productos IA",
+    subtitle: "Discovery estrategico, governance y roadmap ejecutivo",
+    description:
+      "Traducimos visiones de negocio en plataformas accionables. Evaluamos procesos, definimos modelos operativos y entregamos un backlog listo para construir.",
+    points: [
+      "Workshops ejecutivos con matrices de priorizacion",
+      "Arquitecturas de referencia seguras en AWS, Azure o GCP",
+      "OKRs, riesgos y tablero de adopcion listos para PMO",
+    ],
+  },
+  {
+    title: "Ingenieria de experiencias",
+    subtitle: "Interfaces inmersivas y microinteracciones premium",
+    description:
+      "Disenamos journeys que emocionan y convierten. Animaciones, audio reactivo y contenido generado en tiempo real por IA alineado a tu narrativa.",
+    points: [
+      "Design systems auditables y accesibles AA/AAA",
+      "Microinteracciones y transiciones sincronizadas con data en vivo",
+      "Testing de usabilidad asistido con insights generados por IA",
+    ],
+  },
+  {
+    title: "Automatizacion full stack",
+    subtitle: "Agentes, pipelines y observabilidad",
+    description:
+      "Construimos capas de IA operativa que monitorean, ejecutan y aprenden. Desde agentes conversacionales hasta RPA inteligente conectado a tus APIs.",
+    points: [
+      "Orquestacion de agentes y flujos multimodal con guardrails",
+      "Dashboards de observabilidad y alertas con feedback loops",
+      "Integracion con autenticacion, billing y compliance corporativo",
+    ],
+  },
+];
+
+const caseStudies = [
+  {
+    company: "Atlas Maritime",
+    headline: "Gemelo digital para terminales logisticos",
+    description:
+      "Integramos sensores IoT, pronosticos y modelos generativos para coordinar atraques y recursos en puertos latinoamericanos.",
+    result:
+      "32 por ciento menos espera y 4.6M USD ahorrados en 12 meses.",
+    tag: "Logistica inteligente",
+  },
+  {
+    company: "Nova Health Group",
+    headline: "Plataforma de triaje asistido",
+    description:
+      "Equipos medicos reciben historia sintetizada, priorizacion dinamica y seguimiento omnicanal con calidad clinica.",
+    result:
+      "41 por ciento menos tiempo de respuesta y 98 por ciento de satisfaccion.",
+    tag: "Salud",
+  },
+  {
+    company: "Finexus",
+    headline: "Sala de control para banca digital",
+    description:
+      "Unificamos riesgo, cumplimiento y operaciones con tableros prescriptivos y agentes que ejecutan acciones correctivas.",
+    result:
+      "Incidentes criticos resueltos en 11 minutos promedio, antes tomaba 53.",
+    tag: "Finanzas",
+  },
+];
+
+const process = [
+  {
+    phase: "1. Descubrimiento inmersivo",
+    deliverables: "Insights accionables + mapa de valor",
+    description:
+      "Sprints de entrevistas, auditorias de datos y assessment de madurez IA. Co-creamos casos priorizados con ROI trazable.",
+  },
+  {
+    phase: "2. Experimentos controlados",
+    deliverables: "Prototipos vivos + medicion en staging",
+    description:
+      "Diseno, prompts y modelos se prueban con tus datos reales bajo feature flags seguros y telemetria completa.",
+  },
+  {
+    phase: "3. Lanzamiento escalable",
+    deliverables: "Playbooks operativos + monitoreo 24/7",
+    description:
+      "Automatizamos deploys, entrenamiento y soporte. Documentacion, training y handoff segun tus equipos o acompanamiento continuo.",
+  },
+];
+
+const principles = [
+  {
+    title: "IA con impacto real",
+    description:
+      "Cada release nace con KPI de negocio, dashboards de seguimiento y experimentos listos para iterar.",
+  },
+  {
+    title: "Experiencias premium",
+    description:
+      "Transiciones, sonido y contenido sincronizados para audiencias globales que esperan detalle y performance.",
+  },
+  {
+    title: "Velocity sostenida",
+    description:
+      "Stack moderno, infraestructura como codigo y agentes que aceleran QA, soporte y entrenamiento.",
+  },
+];
+
+const trustedBy = [
+  "Microsoft for Startups",
+  "AWS Activate",
+  "Gobierno Digital CL",
+  "VCX Partners",
+  "LA New Ventures",
+  "Biotech LATAM",
+];
+
+export default function Home() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroParallax = useTransform(scrollYProgress, [0, 1], [0, -240]);
+  const year = new Date().getFullYear();
+
+  return (
+    <div className="relative isolate overflow-hidden pb-24">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(140deg,_rgba(3,7,27,0.96)_0%,_rgba(1,4,18,0.82)_40%,_rgba(4,12,40,0.94)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,_rgba(51,241,127,0.14),_transparent_45%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,_rgba(61,131,246,0.16),_transparent_55%)]" />
+        <motion.div
+          style={{ translateY: heroParallax }}
+          className="absolute inset-x-[-25%] top-[-28%] h-[60vh] rounded-full bg-[radial-gradient(circle_at_center,_rgba(116,247,208,0.35),_transparent_60%)] blur-3xl"
+        />
+        <div className="absolute inset-0 opacity-[0.12] bg-[linear-gradient(90deg,_rgba(148,163,184,0.15)_1px,transparent_0),linear-gradient(180deg,_rgba(148,163,184,0.12)_1px,transparent_0)] bg-[size:120px_120px]" />
+      </div>
+
+      <header className="relative z-10">
+        <div className="mx-auto max-w-7xl px-6 pt-10">
+          <div className="flex flex-col gap-4 rounded-full border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+            <Link
+              href="#hero"
+              className="group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.45em] text-slate-100"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-sm font-bold text-white transition group-hover:border-[#74f7d0] group-hover:text-[#74f7d0]">
+                CI
+              </span>
+              ConsultorIA
+            </Link>
+            <nav className="flex flex-wrap items-center justify-center gap-5 text-sm text-slate-300 sm:justify-end md:gap-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group relative inline-flex items-center gap-1 py-1 font-medium tracking-wide transition hover:text-white"
+                >
+                  <span>{item.label}</span>
+                  <span className="absolute inset-x-0 bottom-0 h-[1px] origin-left scale-x-0 bg-white transition-transform duration-300 group-hover:scale-x-100" />
+                </Link>
+              ))}
+            </nav>
+            <Link
+              href="#contacto"
+              className="inline-flex items-center gap-2 self-start rounded-full border border-[#74f7d0]/50 bg-[#74f7d0]/10 px-5 py-2 text-sm font-semibold tracking-wide text-[#74f7d0] transition hover:border-[#74f7d0] hover:bg-[#74f7d0]/20 sm:self-auto"
+            >
+              Agenda un kickoff
+              <span aria-hidden="true">{"->"}</span>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main className="relative z-10">
+        <section
+          id="hero"
+          ref={heroRef}
+          className="mx-auto max-w-7xl px-6 pb-24 pt-24 sm:pt-32"
+        >
+          <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_380px]">
+            <div className="space-y-10">
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.5em] text-slate-200"
+              >
+                Inteligencia aplicada
+              </motion.span>
+              <motion.h1
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+                className="font-[var(--font-display)] text-[clamp(2.8rem,6vw,5rem)] leading-[1.05] text-white"
+              >
+                Productos digitales impulsados por IA que nacen listos para el mundo enterprise.
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                className="max-w-2xl text-lg text-slate-300"
+              >
+                Combinamos estrategia, diseno y ejecucion tecnica con copilotos y agentes que aceleran cada sprint. Sin humo: impacto medible, experiencias premium y bases solidas para escalar.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
+                className="flex flex-col gap-4 sm:flex-row sm:items-center"
+              >
+                <Link
+                  href="#contacto"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-[#33f17f]"
+                >
+                  Iniciar proyecto piloto
+                  <span aria-hidden="true">{"->"}</span>
+                </Link>
+                <Link
+                  href="#casos"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+                >
+                  Ver casos recientes
+                  <span aria-hidden="true">{"->"}</span>
+                </Link>
+              </motion.div>
+              <div className="grid gap-6 sm:grid-cols-3">
+                {metrics.map((metric, index) => (
+                  <Reveal
+                    key={metric.label}
+                    delay={index * 0.08}
+                    className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+                  >
+                    <div className="text-sm uppercase tracking-[0.35em] text-slate-400">
+                      {metric.label}
+                    </div>
+                    <div className="mt-4 font-[var(--font-display)] text-3xl text-white">
+                      {metric.value}
+                    </div>
+                    <p className="mt-3 text-sm text-slate-300">{metric.description}</p>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+            <motion.aside
+              initial={{ opacity: 0, y: 60 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+              className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
+            >
+              <div
+                className="absolute -inset-px rounded-[32px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.22),_rgba(18,26,68,0.8))] opacity-70"
+                aria-hidden
+              />
+              <div className="relative space-y-6">
+                <div>
+                  <span className="text-xs uppercase tracking-[0.45em] text-slate-300">
+                    Plan maestro 10 dias
+                  </span>
+                  <p className="mt-3 font-[var(--font-display)] text-2xl text-white">
+                    Exploramos, prototipamos y entregamos blueprint con roadmap, costos y riesgos.
+                  </p>
+                </div>
+                <div className="grid gap-3 rounded-2xl border border-white/10 bg-[rgba(5,13,42,0.8)] p-4 text-sm text-slate-200">
+                  <div className="text-xs uppercase tracking-[0.4em] text-[#74f7d0]">
+                    Consultor principal
+                  </div>
+                  <div className="text-lg font-semibold text-white">
+                    Jose Miguel Cruz Alvarado
+                  </div>
+                  <div className="grid gap-1 text-sm text-slate-300">
+                    <span>+56 9 9949 5174</span>
+                    <span>jose_cruz_16@live.cl</span>
+                    <span>Vina del Mar, Chile</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span>Soluciones web con inteligencia y diseno</span>
+                  <span className="inline-flex items-center gap-2 text-[#74f7d0]">
+                    Agenda directa
+                    <span aria-hidden="true">{"->"}</span>
+                  </span>
+                </div>
+              </div>
+            </motion.aside>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-24">
+          <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5 px-8 py-6 backdrop-blur">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">
+                Aliados y clientes
+              </span>
+              <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-sm text-slate-200">
+                {trustedBy.map((name) => (
+                  <span
+                    key={name}
+                    className="relative after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:scale-x-0 after:bg-[#74f7d0] after:transition-transform hover:after:scale-x-100"
+                  >
+                    {name}
+                  </span>
+                ))}
+              </div>
+              <div className="hidden sm:flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-[#74f7d0]">
+                98% retencion
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="soluciones" className="mx-auto max-w-7xl px-6 pb-32">
+          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
+                Soluciones
+              </span>
+              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3.2rem)] leading-tight text-white">
+                From idea to rollout con squads mixtos humano + IA y entregables precisos.
+              </h2>
+              <p className="text-sm text-slate-300">
+                Planificamos cada engagement con objetivos cuantificables, medidas de exito compartidas y automatizaciones que nos permiten iterar sin perder control.
+              </p>
+            </div>
+            <Link
+              href="mailto:jose_cruz_16@live.cl"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+            >
+              Descargar brochure
+              <span aria-hidden="true">{"->"}</span>
+            </Link>
+          </div>
+          <div className="grid gap-8 lg:grid-cols-3">
+            {services.map((service, index) => (
+              <Reveal key={service.title} delay={index * 0.12}>
+                <motion.article
+                  whileHover={{ y: -12 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="group relative flex h-full flex-col gap-5 overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur"
+                >
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.12),_rgba(9,16,46,0.9))]" />
+                  </div>
+                  <span className="text-xs uppercase tracking-[0.35em] text-slate-300">
+                    {service.subtitle}
+                  </span>
+                  <h3 className="font-[var(--font-display)] text-2xl text-white">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-slate-300">{service.description}</p>
+                  <ul className="mt-4 space-y-3 text-sm text-slate-200">
+                    {service.points.map((point) => (
+                      <li key={point} className="flex items-start gap-2">
+                        <span className="mt-[6px] h-1.5 w-1.5 flex-none rounded-full bg-[#74f7d0]" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto flex items-center justify-between pt-6 text-sm text-[#74f7d0]">
+                    <span>Blueprint inclusivo</span>
+                    <span aria-hidden="true">{"->"}</span>
+                  </div>
+                </motion.article>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        <section id="casos" className="mx-auto max-w-7xl px-6 pb-32">
+          <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
+                Casos reales
+              </span>
+              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3rem)] leading-tight text-white">
+                Equipos que hoy operan con ConsultorIA + IA y miden resultado cada semana.
+              </h2>
+              <p className="text-sm text-slate-300">
+                Proyectos a medida, integrados con sistemas criticos y operando con SLA enterprise.
+              </p>
+            </div>
+            <Link
+              href="mailto:jose_cruz_16@live.cl?subject=Solicitar%20referencia%20ConsultorIA"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+            >
+              Solicitar referencia
+              <span aria-hidden="true">{"->"}</span>
+            </Link>
+          </div>
+          <div className="grid gap-8 lg:grid-cols-3">
+            {caseStudies.map((item, index) => (
+              <Reveal key={item.company} delay={index * 0.12}>
+                <motion.article
+                  whileHover={{ y: -12 }}
+                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(10,16,46,0.72)] p-8 backdrop-blur"
+                >
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                    <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.16),_rgba(9,14,40,0.9))]" />
+                  </div>
+                  <div className="relative flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-slate-300">
+                    <span className="h-2 w-2 rounded-full bg-[#74f7d0]" />
+                    {item.tag}
+                  </div>
+                  <div className="relative mt-6 space-y-4">
+                    <h3 className="font-[var(--font-display)] text-2xl text-white">
+                      {item.headline}
+                    </h3>
+                    <p className="text-sm text-slate-300">{item.description}</p>
+                  </div>
+                  <div className="relative mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-[#74f7d0]">
+                    {item.result}
+                  </div>
+                  <div className="relative mt-8 flex items-center justify-between text-xs text-slate-400">
+                    <span>{item.company}</span>
+                    <span className="inline-flex items-center gap-2 text-[#74f7d0]">
+                      Ver detalle
+                      <span aria-hidden="true">{"->"}</span>
+                    </span>
+                  </div>
+                </motion.article>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        <section id="metodologia" className="mx-auto max-w-6xl px-6 pb-32">
+          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
+                Metodologia
+              </span>
+              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3rem)] leading-tight text-white">
+                Ejecutamos con foco en gobernanza, velocity y adopcion.
+              </h2>
+              <p className="text-sm text-slate-300">
+                Cada etapa se respalda con dashboards, automatizaciones y entregables ejecutivos que habilitan decisiones rapidas.
+              </p>
+            </div>
+            <div className="rounded-full border border-white/10 bg-white/5 px-6 py-3 text-xs uppercase tracking-[0.4em] text-slate-200">
+              Feature flags, analytics, SRE y soporte incluidos
+            </div>
+          </div>
+          <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-10 backdrop-blur">
+            <div className="absolute left-8 top-10 bottom-10 w-px bg-gradient-to-b from-[#74f7d0] via-white/20 to-[#74f7d0]" />
+            <div className="relative grid gap-12">
+              {process.map((step, index) => (
+                <Reveal key={step.phase} delay={index * 0.12} className="relative pl-16">
+                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-[#060c28] font-semibold text-[#74f7d0]">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                  <div className="text-xs uppercase tracking-[0.35em] text-slate-400">
+                    {step.phase}
+                  </div>
+                  <div className="mt-3 font-[var(--font-display)] text-xl text-white">
+                    {step.deliverables}
+                  </div>
+                  <p className="mt-3 text-sm text-slate-300">{step.description}</p>
+                </Reveal>
+              ))}
+            </div>
+            <div className="mt-12 grid gap-6 rounded-3xl border border-white/10 bg-[rgba(5,10,34,0.8)] p-6 sm:grid-cols-3">
+              {principles.map((item) => (
+                <div key={item.title} className="space-y-3 text-sm text-slate-300">
+                  <div className="text-sm font-semibold uppercase tracking-[0.35em] text-[#74f7d0]">
+                    {item.title}
+                  </div>
+                  <p>{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contacto" className="mx-auto max-w-6xl px-6">
+          <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-[radial-gradient(circle_at_top_left,_rgba(116,247,208,0.24),_rgba(5,12,36,0.85))] px-8 py-12 md:px-12">
+            <div className="absolute inset-0 opacity-40 bg-[linear-gradient(120deg,_rgba(51,241,127,0.2),_transparent)]" />
+            <div className="relative grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+              <div className="space-y-6">
+                <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
+                  Traccion en 72 horas
+                </span>
+                <h2 className="font-[var(--font-display)] text-[clamp(2.2rem,4vw,3.2rem)] leading-[1.1] text-white">
+                  Kickoff ejecutivo, diagnostico profundo y plan accionable sin friccion.
+                </h2>
+                <p className="max-w-2xl text-sm text-slate-200">
+                  Coordinamos sesiones con tus lideres, conectamos datos claves y levantamos oportunidades con impacto financiero. Te llevas un blueprint completo y un piloto listo para activarse.
+                </p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+                    <div className="text-xs uppercase tracking-[0.35em] text-slate-300">
+                      Que incluye
+                    </div>
+                    <ul className="mt-3 space-y-2 text-sm text-slate-200">
+                      <li>Diagnostico tecnico y de negocio</li>
+                      <li>Roadmap con milestones y costos</li>
+                      <li>Plan de adopcion y training</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+                    <div className="text-xs uppercase tracking-[0.35em] text-slate-300">
+                      Opciones
+                    </div>
+                    <ul className="mt-3 space-y-2 text-sm text-slate-200">
+                      <li>Build with ConsultorIA</li>
+                      <li>Coaching para tu equipo interno</li>
+                      <li>Operamos como squad extendido</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-4 pt-4">
+                  <Link
+                    href="mailto:jose_cruz_16@live.cl"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-[#33f17f]"
+                  >
+                    Escribir ahora
+                    <span aria-hidden="true">{"->"}</span>
+                  </Link>
+                  <Link
+                    href="https://wa.me/56999495174"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+                  >
+                    Agendar llamada
+                    <span aria-hidden="true">{"->"}</span>
+                  </Link>
+                  <div className="text-xs uppercase tracking-[0.35em] text-slate-300">
+                    Disponible remoto o en sitio
+                  </div>
+                </div>
+              </div>
+              <div className="relative flex flex-col gap-4 rounded-3xl border border-[rgba(116,247,208,0.3)] bg-[rgba(4,10,38,0.9)] p-6">
+                <div className="relative text-xs uppercase tracking-[0.4em] text-[#74f7d0]">
+                  Datos de contacto
+                </div>
+                <div className="relative font-[var(--font-display)] text-2xl text-white">
+                  Jose Miguel Cruz Alvarado
+                </div>
+                <div className="relative grid gap-2 text-sm text-slate-200">
+                  <span>Director ConsultorIA</span>
+                  <span>+56 9 9949 5174</span>
+                  <span>jose_cruz_16@live.cl</span>
+                  <span>Vina del Mar, Chile</span>
+                </div>
+                <div className="relative mt-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-slate-300">
+                  Compromiso: prototipo funcional con tu data en menos de 10 dias habiles.
+                </div>
+                <div className="relative text-xs uppercase tracking-[0.35em] text-[#74f7d0]">
+                  Ready for global
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="relative z-10 mx-auto max-w-6xl px-6 py-12 text-xs text-slate-400">
+        <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
+          <span>(c) {year} ConsultorIA. Construido desde Vina del Mar, Chile.</span>
+          <div className="flex items-center gap-6">
+            <Link
+              href="mailto:jose_cruz_16@live.cl"
+              className="transition hover:text-[#74f7d0]"
+            >
+              Escribeme
+            </Link>
+            <Link
+              href="https://www.linkedin.com/in/josecruzalvarado"
+              className="transition hover:text-[#74f7d0]"
+            >
+              LinkedIn
+            </Link>
+            <Link href="tel:+56999495174" className="transition hover:text-[#74f7d0]">
+              +56 9 9949 5174
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
