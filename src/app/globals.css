@@ -70,6 +70,14 @@ html {
     background: linear-gradient(135deg, rgba(5, 11, 40, 0.76), rgba(13, 24, 62, 0.4));
     box-shadow: 0 20px 40px rgba(5, 16, 41, 0.45);
   }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes pulse-ring {

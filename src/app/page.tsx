@@ -1,9 +1,37 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Reveal } from "../components/reveal";
+
+function ArrowIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      viewBox="0 0 16 16"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5 11L11 5"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M7.75 5H11V8.25"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
 
 const navigation = [
   { label: "Soluciones", href: "#soluciones" },
@@ -16,20 +44,17 @@ const metrics = [
   {
     label: "Implementaciones enterprise",
     value: "120+",
-    description:
-      "Sistemas desplegados en 7 paises con soporte continuo y gobernanza de datos.",
+    description: "Despliegues en 7 paises con soporte y gobierno continuo.",
   },
   {
     label: "Integraciones criticas",
     value: "45",
-    description:
-      "Conectamos IA con ERPs, CRMs y nubes hibridas manteniendo observabilidad.",
+    description: "ERPs, CRMs y nubes hibridas conectadas con observabilidad total.",
   },
   {
     label: "Tiempo de entrega",
     value: "6 semanas",
-    description:
-      "Del kickoff ejecutivo al primer release medible y listo para escalar.",
+    description: "Pilotos productivos listos para escalar desde el kickoff.",
   },
 ];
 
@@ -38,34 +63,40 @@ const services = [
     title: "Arquitectura de productos IA",
     subtitle: "Discovery estrategico, governance y roadmap ejecutivo",
     description:
-      "Traducimos visiones de negocio en plataformas accionables. Evaluamos procesos, definimos modelos operativos y entregamos un backlog listo para construir.",
+      "Evaluamos tus procesos, modelamos la plataforma y dejamos un backlog priorizado para construir sin friccion.",
     points: [
       "Workshops ejecutivos con matrices de priorizacion",
       "Arquitecturas de referencia seguras en AWS, Azure o GCP",
       "OKRs, riesgos y tablero de adopcion listos para PMO",
     ],
+    image: "/illustrations/mockup-architecture.svg",
+    imageAlt: "Blueprint ejecutivo y tablero de arquitectura de IA",
   },
   {
     title: "Ingenieria de experiencias",
     subtitle: "Interfaces inmersivas y microinteracciones premium",
     description:
-      "Disenamos journeys que emocionan y convierten. Animaciones, audio reactivo y contenido generado en tiempo real por IA alineado a tu narrativa.",
+      "Transformamos journeys criticos en interfaces sensoriales, accesibles y sincronizadas con datos en vivo.",
     points: [
       "Design systems auditables y accesibles AA/AAA",
-      "Microinteracciones y transiciones sincronizadas con data en vivo",
-      "Testing de usabilidad asistido con insights generados por IA",
+      "Microinteracciones y transiciones guiadas por IA generativa",
+      "Testing de usabilidad asistido con insights generados en vivo",
     ],
+    image: "/illustrations/mockup-experience.svg",
+    imageAlt: "Dashboard de experiencia multicanal con modulos interactivos",
   },
   {
     title: "Automatizacion full stack",
     subtitle: "Agentes, pipelines y observabilidad",
     description:
-      "Construimos capas de IA operativa que monitorean, ejecutan y aprenden. Desde agentes conversacionales hasta RPA inteligente conectado a tus APIs.",
+      "Orquestamos agentes, datos y controles para operar IA 24/7 con telemetria y feedback loops definidos.",
     points: [
-      "Orquestacion de agentes y flujos multimodal con guardrails",
-      "Dashboards de observabilidad y alertas con feedback loops",
+      "Orquestacion de agentes multimodal con guardrails",
+      "Dashboards de observabilidad y alertas accionables",
       "Integracion con autenticacion, billing y compliance corporativo",
     ],
+    image: "/illustrations/mockup-automation.svg",
+    imageAlt: "Panel operativo de automatizacion con agentes y metricas en tiempo real",
   },
 ];
 
@@ -74,28 +105,31 @@ const caseStudies = [
     company: "Atlas Maritime",
     headline: "Gemelo digital para terminales logisticos",
     description:
-      "Integramos sensores IoT, pronosticos y modelos generativos para coordinar atraques y recursos en puertos latinoamericanos.",
-    result:
-      "32 por ciento menos espera y 4.6M USD ahorrados en 12 meses.",
+      "Sensores IoT, pronosticos y modelos generativos sincronizados para coordinar atraques y recursos.",
+    result: "32% menos espera y 4.6M USD ahorrados en 12 meses.",
     tag: "Logistica inteligente",
+    image: "/illustrations/mockup-automation.svg",
+    imageAlt: "Gemelo digital operando flujos logisticos en tiempo real",
   },
   {
     company: "Nova Health Group",
     headline: "Plataforma de triaje asistido",
     description:
-      "Equipos medicos reciben historia sintetizada, priorizacion dinamica y seguimiento omnicanal con calidad clinica.",
-    result:
-      "41 por ciento menos tiempo de respuesta y 98 por ciento de satisfaccion.",
+      "Historias clinicas sintetizadas, priorizacion dinamica y seguimiento omnicanal con calidad clinica.",
+    result: "-41% en tiempo de respuesta y 98% de satisfaccion.",
     tag: "Salud",
+    image: "/illustrations/mockup-experience.svg",
+    imageAlt: "Panel de triaje asistido por IA para equipos clinicos",
   },
   {
     company: "Finexus",
     headline: "Sala de control para banca digital",
     description:
-      "Unificamos riesgo, cumplimiento y operaciones con tableros prescriptivos y agentes que ejecutan acciones correctivas.",
-    result:
-      "Incidentes criticos resueltos en 11 minutos promedio, antes tomaba 53.",
+      "Riesgo, cumplimiento y operaciones centralizados con tableros prescriptivos y agentes correctivos.",
+    result: "Incidentes criticos resueltos en 11 minutos (antes 53).",
     tag: "Finanzas",
+    image: "/illustrations/mockup-architecture.svg",
+    imageAlt: "Sala de control financiera con metricas y alertas priorizadas",
   },
 ];
 
@@ -170,8 +204,8 @@ export default function Home() {
       </div>
 
       <header className="relative z-10">
-        <div className="mx-auto max-w-7xl px-6 pt-10">
-          <div className="flex flex-col gap-4 rounded-full border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
+          <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-md sm:px-6 sm:py-5 md:flex-row md:items-center md:justify-between">
             <Link
               href="#hero"
               className="group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.45em] text-slate-100"
@@ -181,12 +215,12 @@ export default function Home() {
               </span>
               ConsultorIA
             </Link>
-            <nav className="flex flex-wrap items-center justify-center gap-5 text-sm text-slate-300 sm:justify-end md:gap-8">
+            <nav className="hide-scrollbar flex w-full items-center justify-between gap-3 overflow-x-auto text-[0.72rem] uppercase tracking-[0.35em] text-slate-300 sm:justify-center sm:text-xs md:w-auto md:justify-end md:text-sm md:tracking-[0.28em]">
               {navigation.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group relative inline-flex items-center gap-1 py-1 font-medium tracking-wide transition hover:text-white"
+                  className="group relative inline-flex items-center gap-1 rounded-full px-2 py-1 font-medium transition hover:text-white"
                 >
                   <span>{item.label}</span>
                   <span className="absolute inset-x-0 bottom-0 h-[1px] origin-left scale-x-0 bg-white transition-transform duration-300 group-hover:scale-x-100" />
@@ -195,10 +229,10 @@ export default function Home() {
             </nav>
             <Link
               href="#contacto"
-              className="inline-flex items-center gap-2 self-start rounded-full border border-[#74f7d0]/50 bg-[#74f7d0]/10 px-5 py-2 text-sm font-semibold tracking-wide text-[#74f7d0] transition hover:border-[#74f7d0] hover:bg-[#74f7d0]/20 sm:self-auto"
+              className="inline-flex items-center gap-2 self-start rounded-full border border-[#74f7d0]/60 bg-[#74f7d0]/10 px-5 py-2 text-sm font-semibold tracking-wide text-[#63e6c3] transition hover:border-[#74f7d0] hover:bg-[#74f7d0]/20 hover:text-[#74f7d0] sm:self-auto"
             >
               Agenda un kickoff
-              <span aria-hidden="true">{"->"}</span>
+              <ArrowIcon className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -208,7 +242,7 @@ export default function Home() {
         <section
           id="hero"
           ref={heroRef}
-          className="mx-auto max-w-7xl px-6 pb-24 pt-24 sm:pt-32"
+          className="mx-auto max-w-7xl px-4 pb-24 pt-24 sm:px-6 sm:pt-32"
         >
           <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_380px]">
             <div className="space-y-10">
@@ -244,17 +278,17 @@ export default function Home() {
               >
                 <Link
                   href="#contacto"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-[#33f17f]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-[#041b21] transition hover:bg-[#33f17f]"
                 >
                   Iniciar proyecto piloto
-                  <span aria-hidden="true">{"->"}</span>
+                  <ArrowIcon className="h-4 w-4" />
                 </Link>
                 <Link
                   href="#casos"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
                 >
                   Ver casos recientes
-                  <span aria-hidden="true">{"->"}</span>
+                  <ArrowIcon className="h-4 w-4" />
                 </Link>
               </motion.div>
               <div className="grid gap-6 sm:grid-cols-3">
@@ -311,7 +345,7 @@ export default function Home() {
                   <span>Soluciones web con inteligencia y diseno</span>
                   <span className="inline-flex items-center gap-2 text-[#74f7d0]">
                     Agenda directa
-                    <span aria-hidden="true">{"->"}</span>
+                    <ArrowIcon className="h-3.5 w-3.5" />
                   </span>
                 </div>
               </div>
@@ -319,7 +353,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-6 pb-24">
+        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
           <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5 px-8 py-6 backdrop-blur">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">
@@ -342,7 +376,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="soluciones" className="mx-auto max-w-7xl px-6 pb-32">
+        <section id="soluciones" className="mx-auto max-w-7xl px-4 pb-32 sm:px-6">
           <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl space-y-4">
               <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
@@ -357,10 +391,10 @@ export default function Home() {
             </div>
             <Link
               href="mailto:jose_cruz_16@live.cl"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
             >
               Descargar brochure
-              <span aria-hidden="true">{"->"}</span>
+              <ArrowIcon className="h-4 w-4" />
             </Link>
           </div>
           <div className="grid gap-8 lg:grid-cols-3">
@@ -374,13 +408,25 @@ export default function Home() {
                   <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.12),_rgba(9,16,46,0.9))]" />
                   </div>
+                  <figure className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#040d23]/60">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.18),_transparent_70%)] opacity-70 transition duration-500 group-hover:opacity-100" />
+                    <Image
+                      src={service.image}
+                      alt={service.imageAlt}
+                      width={320}
+                      height={200}
+                      loading="lazy"
+                      className="relative z-10 h-auto w-full object-cover"
+                      sizes="(min-width: 1024px) 320px, 90vw"
+                    />
+                  </figure>
                   <span className="text-xs uppercase tracking-[0.35em] text-slate-300">
                     {service.subtitle}
                   </span>
                   <h3 className="font-[var(--font-display)] text-2xl text-white">
                     {service.title}
                   </h3>
-                  <p className="text-sm text-slate-300">{service.description}</p>
+                  <p className="text-sm text-slate-200">{service.description}</p>
                   <ul className="mt-4 space-y-3 text-sm text-slate-200">
                     {service.points.map((point) => (
                       <li key={point} className="flex items-start gap-2">
@@ -391,7 +437,7 @@ export default function Home() {
                   </ul>
                   <div className="mt-auto flex items-center justify-between pt-6 text-sm text-[#74f7d0]">
                     <span>Blueprint inclusivo</span>
-                    <span aria-hidden="true">{"->"}</span>
+                    <ArrowIcon className="h-4 w-4" />
                   </div>
                 </motion.article>
               </Reveal>
@@ -399,7 +445,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="casos" className="mx-auto max-w-7xl px-6 pb-32">
+        <section id="casos" className="mx-auto max-w-7xl px-4 pb-32 sm:px-6">
           <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl space-y-4">
               <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
@@ -414,10 +460,10 @@ export default function Home() {
             </div>
             <Link
               href="mailto:jose_cruz_16@live.cl?subject=Solicitar%20referencia%20ConsultorIA"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
             >
               Solicitar referencia
-              <span aria-hidden="true">{"->"}</span>
+              <ArrowIcon className="h-4 w-4" />
             </Link>
           </div>
           <div className="grid gap-8 lg:grid-cols-3">
@@ -431,6 +477,18 @@ export default function Home() {
                   <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.16),_rgba(9,14,40,0.9))]" />
                   </div>
+                  <figure className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#040d23]/60">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(51,241,127,0.16),_transparent_70%)] opacity-70 transition duration-500 group-hover:opacity-100" />
+                    <Image
+                      src={item.image}
+                      alt={item.imageAlt}
+                      width={320}
+                      height={200}
+                      loading="lazy"
+                      className="relative z-10 h-auto w-full object-cover"
+                      sizes="(min-width: 1024px) 320px, 90vw"
+                    />
+                  </figure>
                   <div className="relative flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-slate-300">
                     <span className="h-2 w-2 rounded-full bg-[#74f7d0]" />
                     {item.tag}
@@ -439,16 +497,16 @@ export default function Home() {
                     <h3 className="font-[var(--font-display)] text-2xl text-white">
                       {item.headline}
                     </h3>
-                    <p className="text-sm text-slate-300">{item.description}</p>
+                    <p className="text-sm text-slate-200">{item.description}</p>
                   </div>
-                  <div className="relative mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-[#74f7d0]">
+                  <div className="relative mt-6 rounded-2xl border border-[#74f7d0]/30 bg-[#0b1e33]/80 p-4 text-sm text-[#74f7d0]">
                     {item.result}
                   </div>
                   <div className="relative mt-8 flex items-center justify-between text-xs text-slate-400">
                     <span>{item.company}</span>
                     <span className="inline-flex items-center gap-2 text-[#74f7d0]">
                       Ver detalle
-                      <span aria-hidden="true">{"->"}</span>
+                      <ArrowIcon className="h-3.5 w-3.5" />
                     </span>
                   </div>
                 </motion.article>
@@ -457,7 +515,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="metodologia" className="mx-auto max-w-6xl px-6 pb-32">
+        <section id="metodologia" className="mx-auto max-w-6xl px-4 pb-32 sm:px-6">
           <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl space-y-4">
               <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
@@ -505,7 +563,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contacto" className="mx-auto max-w-6xl px-6">
+        <section id="contacto" className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-[radial-gradient(circle_at_top_left,_rgba(116,247,208,0.24),_rgba(5,12,36,0.85))] px-8 py-12 md:px-12">
             <div className="absolute inset-0 opacity-40 bg-[linear-gradient(120deg,_rgba(51,241,127,0.2),_transparent)]" />
             <div className="relative grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -544,17 +602,17 @@ export default function Home() {
                 <div className="flex flex-wrap items-center gap-4 pt-4">
                   <Link
                     href="mailto:jose_cruz_16@live.cl"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-[#33f17f]"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-[#041b21] transition hover:bg-[#33f17f]"
                   >
                     Escribir ahora
-                    <span aria-hidden="true">{"->"}</span>
+                    <ArrowIcon className="h-4 w-4" />
                   </Link>
                   <Link
                     href="https://wa.me/56999495174"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
                   >
                     Agendar llamada
-                    <span aria-hidden="true">{"->"}</span>
+                    <ArrowIcon className="h-4 w-4" />
                   </Link>
                   <div className="text-xs uppercase tracking-[0.35em] text-slate-300">
                     Disponible remoto o en sitio
@@ -586,7 +644,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="relative z-10 mx-auto max-w-6xl px-6 py-12 text-xs text-slate-400">
+      <footer className="relative z-10 mx-auto max-w-6xl px-4 py-12 text-xs text-slate-400 sm:px-6">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
           <span>(c) {year} ConsultorIA. Construido desde Vina del Mar, Chile.</span>
           <div className="flex items-center gap-6">
