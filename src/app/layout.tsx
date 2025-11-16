@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
 import { LenisProvider } from "../components/lenis-provider";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-body",
-  subsets: ["latin"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "ConsultorIA - Inteligencia aplicada a tus productos digitales",
@@ -39,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased bg-slate-950 text-slate-100`}>
+      <body className="antialiased bg-slate-950 text-slate-100">
         <LenisProvider>{children}</LenisProvider>
       </body>
     </html>

@@ -1,174 +1,152 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { Reveal } from "../components/reveal";
-
-function ArrowIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      viewBox="0 0 16 16"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M5 11L11 5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M7.75 5H11V8.25"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
+import { useRef, useState } from "react";
+import { Service, CaseStudy, Testimonial } from "@/types/content";
+import { ServiceGrid } from "@/components/cards/service-grid";
+import { CaseCarousel } from "@/components/cards/case-carousel";
+import { TestimonialsMarquee } from "@/components/testimonials-marquee";
+import { ContactForm } from "@/components/contact-form";
+import { MotionSection } from "@/components/motion-section";
+import { trackEvent } from "@/lib/analytics";
+import { useLiveMetrics } from "@/hooks/use-live-metrics";
+import { ArrowIcon } from "@/components/icons";
 
 const navigation = [
   { label: "Soluciones", href: "#soluciones" },
   { label: "Casos", href: "#casos" },
-  { label: "Metodologia", href: "#metodologia" },
+  { label: "Metodología", href: "#metodologia" },
+  { label: "Recursos", href: "/recursos" },
   { label: "Contacto", href: "#contacto" },
 ];
 
-const metrics = [
-  {
-    label: "Implementaciones enterprise",
-    value: "120+",
-    description: "Despliegues en 7 paises con soporte y gobierno continuo.",
-  },
-  {
-    label: "Integraciones criticas",
-    value: "45",
-    description: "ERPs, CRMs y nubes hibridas conectadas con observabilidad total.",
-  },
-  {
-    label: "Tiempo de entrega",
-    value: "6 semanas",
-    description: "Pilotos productivos listos para escalar desde el kickoff.",
-  },
-];
-
-const services = [
+const services: Service[] = [
   {
     title: "Arquitectura de productos IA",
-    subtitle: "Discovery estrategico, governance y roadmap ejecutivo",
+    subtitle: "Discovery estratégico",
     description:
-      "Evaluamos tus procesos, modelamos la plataforma y dejamos un backlog priorizado para construir sin friccion.",
+      "Evaluamos procesos, modelamos la plataforma y dejamos un backlog priorizado listo para PMO y squads.",
     points: [
-      "Workshops ejecutivos con matrices de priorizacion",
-      "Arquitecturas de referencia seguras en AWS, Azure o GCP",
-      "OKRs, riesgos y tablero de adopcion listos para PMO",
+      "Workshops ejecutivos + matriz de priorización",
+      "Blueprint multicloud con controles de seguridad",
+      "Playbooks de gobernanza y ROI trazable",
     ],
     image: "/illustrations/mockup-architecture.svg",
     imageAlt: "Blueprint ejecutivo y tablero de arquitectura de IA",
+    badge: "Advisory",
   },
   {
-    title: "Ingenieria de experiencias",
-    subtitle: "Interfaces inmersivas y microinteracciones premium",
+    title: "Ingeniería de experiencias",
+    subtitle: "Interfaces inmersivas",
     description:
-      "Transformamos journeys criticos en interfaces sensoriales, accesibles y sincronizadas con datos en vivo.",
+      "Transformamos journeys críticos en interfaces sensoriales, accesibles y sincronizadas con datos en vivo.",
     points: [
-      "Design systems auditables y accesibles AA/AAA",
-      "Microinteracciones y transiciones guiadas por IA generativa",
-      "Testing de usabilidad asistido con insights generados en vivo",
+      "Design systems AA/AAA con microinteracciones",
+      "Testing asistido + insights en vivo",
+      "Contenido multimodal con IA generativa",
     ],
     image: "/illustrations/mockup-experience.svg",
-    imageAlt: "Dashboard de experiencia multicanal con modulos interactivos",
+    imageAlt: "Dashboard de experiencia multicanal con módulos interactivos",
+    badge: "Studio",
   },
   {
-    title: "Automatizacion full stack",
-    subtitle: "Agentes, pipelines y observabilidad",
+    title: "Automatización full stack",
+    subtitle: "Agentes + observabilidad",
     description:
-      "Orquestamos agentes, datos y controles para operar IA 24/7 con telemetria y feedback loops definidos.",
+      "Orquestamos agentes, datos y controles para operar IA 24/7 con telemetría y feedback loops definidos.",
     points: [
-      "Orquestacion de agentes multimodal con guardrails",
-      "Dashboards de observabilidad y alertas accionables",
-      "Integracion con autenticacion, billing y compliance corporativo",
+      "Orquestación de agentes con guardrails",
+      "Dashboards de observabilidad y alertas",
+      "Integración con billing, auth y compliance",
     ],
     image: "/illustrations/mockup-automation.svg",
-    imageAlt: "Panel operativo de automatizacion con agentes y metricas en tiempo real",
+    imageAlt: "Panel operativo de automatización con agentes y métricas",
+    badge: "Ops",
   },
 ];
 
-const caseStudies = [
+const caseStudies: CaseStudy[] = [
   {
     company: "Atlas Maritime",
-    headline: "Gemelo digital para terminales logisticos",
-    description:
-      "Sensores IoT, pronosticos y modelos generativos sincronizados para coordinar atraques y recursos.",
+    headline: "Gemelo digital para terminales logísticos",
+    description: "Sensores IoT y modelos generativos coordinan atraques y recursos en tiempo real.",
     result: "32% menos espera y 4.6M USD ahorrados en 12 meses.",
-    tag: "Logistica inteligente",
+    tag: "Logística",
     image: "/illustrations/mockup-automation.svg",
-    imageAlt: "Gemelo digital operando flujos logisticos en tiempo real",
+    imageAlt: "Gemelo digital operando flujos logísticos",
   },
   {
     company: "Nova Health Group",
     headline: "Plataforma de triaje asistido",
-    description:
-      "Historias clinicas sintetizadas, priorizacion dinamica y seguimiento omnicanal con calidad clinica.",
-    result: "-41% en tiempo de respuesta y 98% de satisfaccion.",
+    description: "Historias clínicas sintetizadas y seguimiento omnicanal con calidad clínica.",
+    result: "-41% en tiempo de respuesta y 98% de satisfacción.",
     tag: "Salud",
     image: "/illustrations/mockup-experience.svg",
-    imageAlt: "Panel de triaje asistido por IA para equipos clinicos",
+    imageAlt: "Panel de triaje asistido por IA",
   },
   {
     company: "Finexus",
     headline: "Sala de control para banca digital",
-    description:
-      "Riesgo, cumplimiento y operaciones centralizados con tableros prescriptivos y agentes correctivos.",
-    result: "Incidentes criticos resueltos en 11 minutos (antes 53).",
+    description: "Riesgo, cumplimiento y operaciones centralizados con tableros prescriptivos.",
+    result: "Incidentes críticos resueltos en 11 minutos (antes 53).",
     tag: "Finanzas",
     image: "/illustrations/mockup-architecture.svg",
-    imageAlt: "Sala de control financiera con metricas y alertas priorizadas",
+    imageAlt: "Sala de control financiera",
   },
 ];
 
 const process = [
   {
     phase: "1. Descubrimiento inmersivo",
-    deliverables: "Insights accionables + mapa de valor",
-    description:
-      "Sprints de entrevistas, auditorias de datos y assessment de madurez IA. Co-creamos casos priorizados con ROI trazable.",
+    deliverables: "Insights + mapa de valor",
+    description: "Auditoría de datos, assessment de madurez y casos priorizados con ROI trazable.",
   },
   {
     phase: "2. Experimentos controlados",
-    deliverables: "Prototipos vivos + medicion en staging",
-    description:
-      "Diseno, prompts y modelos se prueban con tus datos reales bajo feature flags seguros y telemetria completa.",
+    deliverables: "Prototipos vivos + staging",
+    description: "Prompts, modelos y flujos se validan con tus datos bajo feature flags y telemetría.",
   },
   {
     phase: "3. Lanzamiento escalable",
-    deliverables: "Playbooks operativos + monitoreo 24/7",
-    description:
-      "Automatizamos deploys, entrenamiento y soporte. Documentacion, training y handoff segun tus equipos o acompanamiento continuo.",
+    deliverables: "Playbooks + monitoreo 24/7",
+    description: "Automatizamos deploys, entrenamiento y soporte. Documentación completa para tus equipos.",
   },
 ];
 
 const principles = [
   {
     title: "IA con impacto real",
-    description:
-      "Cada release nace con KPI de negocio, dashboards de seguimiento y experimentos listos para iterar.",
+    description: "Cada release nace con KPI de negocio, dashboards y experimentos listos para iterar.",
   },
   {
     title: "Experiencias premium",
-    description:
-      "Transiciones, sonido y contenido sincronizados para audiencias globales que esperan detalle y performance.",
+    description: "Transiciones, sonido y contenido sincronizados para audiencias globales.",
   },
   {
     title: "Velocity sostenida",
-    description:
-      "Stack moderno, infraestructura como codigo y agentes que aceleran QA, soporte y entrenamiento.",
+    description: "Infraestructura como código, agentes para QA y soporte continuo.",
+  },
+];
+
+const testimonials: Testimonial[] = [
+  {
+    quote: "El kickoff incluyó tableros, governance y un piloto en 6 semanas sin sorpresas.",
+    author: "Marina Feldman",
+    role: "CPO, Atlas Maritime",
+    logo: "atlas",
+  },
+  {
+    quote: "Su escuadrón de experiencia es el único que combina creatividad y rigor técnico.",
+    author: "Omar Contreras",
+    role: "VP Experience, Finexus",
+    logo: "finexus",
+  },
+  {
+    quote: "Nos ayudaron a traducir IA en resultados clínicos medibles con auditoría completa.",
+    author: "Isabel Rojas",
+    role: "CTO, Nova Health",
+    logo: "nova",
   },
 ];
 
@@ -183,12 +161,16 @@ const trustedBy = [
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
+  const { scrollYProgress, scrollY } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroParallax = useTransform(scrollYProgress, [0, 1], [0, -240]);
+  const headerBg = useTransform(scrollY, [0, 120], ["rgba(2,3,18,0)", "rgba(2,3,18,0.8)"]);
+  const headerBorder = useTransform(scrollY, [0, 120], ["rgba(255,255,255,0)", "rgba(255,255,255,0.08)"]);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [period, setPeriod] = useState<"year" | "quarter">("year");
+  const { metrics } = useLiveMetrics(period);
   const year = new Date().getFullYear();
+
+  const handleCtaClick = (name: string) => trackEvent({ name: "cta_click", data: { name } });
 
   return (
     <div className="relative isolate overflow-hidden pb-24">
@@ -196,474 +178,252 @@ export default function Home() {
         <div className="absolute inset-0 bg-[linear-gradient(140deg,_rgba(3,7,27,0.96)_0%,_rgba(1,4,18,0.82)_40%,_rgba(4,12,40,0.94)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,_rgba(51,241,127,0.14),_transparent_45%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,_rgba(61,131,246,0.16),_transparent_55%)]" />
-        <motion.div
-          style={{ translateY: heroParallax }}
-          className="absolute inset-x-[-25%] top-[-28%] h-[60vh] rounded-full bg-[radial-gradient(circle_at_center,_rgba(116,247,208,0.35),_transparent_60%)] blur-3xl"
-        />
-        <div className="absolute inset-0 opacity-[0.12] bg-[linear-gradient(90deg,_rgba(148,163,184,0.15)_1px,transparent_0),linear-gradient(180deg,_rgba(148,163,184,0.12)_1px,transparent_0)] bg-[size:120px_120px]" />
+        <motion.div style={{ translateY: heroParallax }} className="absolute inset-x-0 top-0 h-[720px] bg-[radial-gradient(circle_at_50%_0%,_rgba(116,247,208,0.25),_transparent_60%)]" />
       </div>
 
-      <header className="relative z-10">
-        <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
-          <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-md sm:px-6 sm:py-5 md:flex-row md:items-center md:justify-between">
-            <Link
-              href="#hero"
-              className="group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.45em] text-slate-100"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-sm font-bold text-white transition group-hover:border-[#74f7d0] group-hover:text-[#74f7d0]">
-                CI
-              </span>
-              ConsultorIA
+      <motion.header
+        style={{ backgroundColor: headerBg, borderColor: headerBorder }}
+        className="sticky top-4 z-50 mx-auto flex max-w-6xl items-center justify-between rounded-2xl border px-6 py-3 backdrop-blur"
+      >
+        <Link href="/" className="text-sm font-semibold tracking-[0.4em] text-white">
+          CONSULTORIA
+        </Link>
+        <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
+          {navigation.map((item) => (
+            <Link key={item.label} href={item.href} className="transition hover:text-white">
+              {item.label}
             </Link>
-            <nav className="hide-scrollbar flex w-full items-center justify-between gap-3 overflow-x-auto text-[0.72rem] uppercase tracking-[0.35em] text-slate-300 sm:justify-center sm:text-xs md:w-auto md:justify-end md:text-sm md:tracking-[0.28em]">
-              {navigation.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="group relative inline-flex items-center gap-1 rounded-full px-2 py-1 font-medium transition hover:text-white"
-                >
-                  <span>{item.label}</span>
-                  <span className="absolute inset-x-0 bottom-0 h-[1px] origin-left scale-x-0 bg-white transition-transform duration-300 group-hover:scale-x-100" />
-                </Link>
-              ))}
-            </nav>
+          ))}
+          <Link
+            href="/recursos"
+            onClick={() => handleCtaClick("header-secondary")}
+            className="text-xs uppercase tracking-[0.3em] text-emerald-300"
+          >
+            Brochure
+          </Link>
+          <Link
+            href="#contacto"
+            onClick={() => handleCtaClick("header-primary")}
+            className="rounded-full bg-emerald-400/90 px-4 py-2 text-slate-950"
+          >
+            Agenda kickoff
+          </Link>
+        </nav>
+        <button className="md:hidden" onClick={() => setMenuOpen((prev) => !prev)} aria-label="Abrir menú">
+          ☰
+        </button>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute right-4 top-16 flex w-56 flex-col gap-3 rounded-2xl border border-white/10 bg-[#040824] p-4 text-sm"
+          >
+            {navigation.map((item) => (
+              <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>
+                {item.label}
+              </Link>
+            ))}
             <Link
               href="#contacto"
-              className="inline-flex items-center gap-2 self-start rounded-full border border-[#74f7d0]/60 bg-[#74f7d0]/10 px-5 py-2 text-sm font-semibold tracking-wide text-[#63e6c3] transition hover:border-[#74f7d0] hover:bg-[#74f7d0]/20 hover:text-[#74f7d0] sm:self-auto"
+              className="rounded-full bg-emerald-400/90 px-4 py-2 text-center text-slate-950"
+              onClick={() => {
+                handleCtaClick("header-mobile");
+                setMenuOpen(false);
+              }}
             >
-              Agenda un kickoff
-              <ArrowIcon className="h-4 w-4" />
+              Agenda kickoff
             </Link>
+          </motion.div>
+        )}
+      </motion.header>
+
+      <section ref={heroRef} className="mx-auto mt-24 flex max-w-6xl flex-col gap-12 px-6 lg:flex-row">
+        <div className="flex-1 space-y-6">
+          <p className="text-sm uppercase tracking-[0.5em] text-emerald-200">IA ENTERPRISE {year}</p>
+          <h1 className="text-5xl font-semibold leading-tight text-white">
+            Diseñamos, construimos y operamos experiencias impulsadas por IA para organizaciones que lideran industrias.
+          </h1>
+          <p className="text-lg text-white/70">
+            Activamos squads híbridos que integran estrategia, diseño, ingeniería y analítica para lanzar programas de IA con impacto real.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Link
+              href="#contacto"
+              onClick={() => handleCtaClick("hero-primary")}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-lg font-semibold text-slate-900"
+            >
+              Agenda un diagnóstico
+              <ArrowIcon className="text-slate-900" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => handleCtaClick("hero-secondary")}
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-lg text-white"
+            >
+              Descargar playbook
+            </button>
           </div>
         </div>
-      </header>
-
-      <main className="relative z-10">
-        <section
-          id="hero"
-          ref={heroRef}
-          className="mx-auto max-w-7xl px-4 pb-24 pt-24 sm:px-6 sm:pt-32"
-        >
-          <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_380px]">
-            <div className="space-y-10">
-              <motion.span
+        <div className="flex-1 space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6">
+          <div className="flex items-center justify-between text-sm text-white/70">
+            <span>Métricas en vivo</span>
+            <div className="inline-flex rounded-full border border-white/10 p-1 text-xs">
+              {(["year", "quarter"] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => {
+                    setPeriod(value);
+                    trackEvent({ name: "metric_toggle", data: { period: value } });
+                  }}
+                  className={`rounded-full px-3 py-1 ${
+                    period === value ? "bg-white text-slate-900" : "text-white/60"
+                  }`}
+                >
+                  {value === "year" ? "Últimos 12 meses" : "Último trimestre"}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {metrics.map((metric) => (
+              <motion.div
+                key={metric.label}
+                className="rounded-2xl border border-white/10 bg-white/5 p-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.5em] text-slate-200"
               >
-                Inteligencia aplicada
-              </motion.span>
-              <motion.h1
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                className="font-[var(--font-display)] text-[clamp(2.8rem,6vw,5rem)] leading-[1.05] text-white"
-              >
-                Productos digitales impulsados por IA que nacen listos para el mundo enterprise.
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-                className="max-w-2xl text-lg text-slate-300"
-              >
-                Combinamos estrategia, diseno y ejecucion tecnica con copilotos y agentes que aceleran cada sprint. Sin humo: impacto medible, experiencias premium y bases solidas para escalar.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
-                className="flex flex-col gap-4 sm:flex-row sm:items-center"
-              >
-                <Link
-                  href="#contacto"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-[#041b21] transition hover:bg-[#33f17f]"
-                >
-                  Iniciar proyecto piloto
-                  <ArrowIcon className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="#casos"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
-                >
-                  Ver casos recientes
-                  <ArrowIcon className="h-4 w-4" />
-                </Link>
-              </motion.div>
-              <div className="grid gap-6 sm:grid-cols-3">
-                {metrics.map((metric, index) => (
-                  <Reveal
-                    key={metric.label}
-                    delay={index * 0.08}
-                    className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
-                  >
-                    <div className="text-sm uppercase tracking-[0.35em] text-slate-400">
-                      {metric.label}
-                    </div>
-                    <div className="mt-4 font-[var(--font-display)] text-3xl text-white">
-                      {metric.value}
-                    </div>
-                    <p className="mt-3 text-sm text-slate-300">{metric.description}</p>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-            <motion.aside
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-              className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
-            >
-              <div
-                className="absolute -inset-px rounded-[32px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.22),_rgba(18,26,68,0.8))] opacity-70"
-                aria-hidden
-              />
-              <div className="relative space-y-6">
-                <div>
-                  <span className="text-xs uppercase tracking-[0.45em] text-slate-300">
-                    Plan maestro 10 dias
-                  </span>
-                  <p className="mt-3 font-[var(--font-display)] text-2xl text-white">
-                    Exploramos, prototipamos y entregamos blueprint con roadmap, costos y riesgos.
-                  </p>
-                </div>
-                <div className="grid gap-3 rounded-2xl border border-white/10 bg-[rgba(5,13,42,0.8)] p-4 text-sm text-slate-200">
-                  <div className="text-xs uppercase tracking-[0.4em] text-[#74f7d0]">
-                    Consultor principal
-                  </div>
-                  <div className="text-lg font-semibold text-white">
-                    Jose Miguel Cruz Alvarado
-                  </div>
-                  <div className="grid gap-1 text-sm text-slate-300">
-                    <span>+56 9 9949 5174</span>
-                    <span>jose_cruz_16@live.cl</span>
-                    <span>Vina del Mar, Chile</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Soluciones web con inteligencia y diseno</span>
-                  <span className="inline-flex items-center gap-2 text-[#74f7d0]">
-                    Agenda directa
-                    <ArrowIcon className="h-3.5 w-3.5" />
-                  </span>
-                </div>
-              </div>
-            </motion.aside>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5 px-8 py-6 backdrop-blur">
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">
-                Aliados y clientes
-              </span>
-              <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-sm text-slate-200">
-                {trustedBy.map((name) => (
-                  <span
-                    key={name}
-                    className="relative after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:scale-x-0 after:bg-[#74f7d0] after:transition-transform hover:after:scale-x-100"
-                  >
-                    {name}
-                  </span>
-                ))}
-              </div>
-              <div className="hidden sm:flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-[#74f7d0]">
-                98% retencion
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="soluciones" className="mx-auto max-w-7xl px-4 pb-32 sm:px-6">
-          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl space-y-4">
-              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
-                Soluciones
-              </span>
-              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3.2rem)] leading-tight text-white">
-                From idea to rollout con squads mixtos humano + IA y entregables precisos.
-              </h2>
-              <p className="text-sm text-slate-300">
-                Planificamos cada engagement con objetivos cuantificables, medidas de exito compartidas y automatizaciones que nos permiten iterar sin perder control.
-              </p>
-            </div>
-            <Link
-              href="mailto:jose_cruz_16@live.cl"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
-            >
-              Descargar brochure
-              <ArrowIcon className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid gap-8 lg:grid-cols-3">
-            {services.map((service, index) => (
-              <Reveal key={service.title} delay={index * 0.12}>
-                <motion.article
-                  whileHover={{ y: -12 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative flex h-full flex-col gap-5 overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur"
-                >
-                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.12),_rgba(9,16,46,0.9))]" />
-                  </div>
-                  <figure className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#040d23]/60">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.18),_transparent_70%)] opacity-70 transition duration-500 group-hover:opacity-100" />
-                    <Image
-                      src={service.image}
-                      alt={service.imageAlt}
-                      width={320}
-                      height={200}
-                      loading="lazy"
-                      className="relative z-10 h-auto w-full object-cover"
-                      sizes="(min-width: 1024px) 320px, 90vw"
-                    />
-                  </figure>
-                  <span className="text-xs uppercase tracking-[0.35em] text-slate-300">
-                    {service.subtitle}
-                  </span>
-                  <h3 className="font-[var(--font-display)] text-2xl text-white">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-slate-200">{service.description}</p>
-                  <ul className="mt-4 space-y-3 text-sm text-slate-200">
-                    {service.points.map((point) => (
-                      <li key={point} className="flex items-start gap-2">
-                        <span className="mt-[6px] h-1.5 w-1.5 flex-none rounded-full bg-[#74f7d0]" />
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-auto flex items-center justify-between pt-6 text-sm text-[#74f7d0]">
-                    <span>Blueprint inclusivo</span>
-                    <ArrowIcon className="h-4 w-4" />
-                  </div>
-                </motion.article>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        <section id="casos" className="mx-auto max-w-7xl px-4 pb-32 sm:px-6">
-          <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl space-y-4">
-              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
-                Casos reales
-              </span>
-              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3rem)] leading-tight text-white">
-                Equipos que hoy operan con ConsultorIA + IA y miden resultado cada semana.
-              </h2>
-              <p className="text-sm text-slate-300">
-                Proyectos a medida, integrados con sistemas criticos y operando con SLA enterprise.
-              </p>
-            </div>
-            <Link
-              href="mailto:jose_cruz_16@live.cl?subject=Solicitar%20referencia%20ConsultorIA"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
-            >
-              Solicitar referencia
-              <ArrowIcon className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid gap-8 lg:grid-cols-3">
-            {caseStudies.map((item, index) => (
-              <Reveal key={item.company} delay={index * 0.12}>
-                <motion.article
-                  whileHover={{ y: -12 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(10,16,46,0.72)] p-8 backdrop-blur"
-                >
-                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.16),_rgba(9,14,40,0.9))]" />
-                  </div>
-                  <figure className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#040d23]/60">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(51,241,127,0.16),_transparent_70%)] opacity-70 transition duration-500 group-hover:opacity-100" />
-                    <Image
-                      src={item.image}
-                      alt={item.imageAlt}
-                      width={320}
-                      height={200}
-                      loading="lazy"
-                      className="relative z-10 h-auto w-full object-cover"
-                      sizes="(min-width: 1024px) 320px, 90vw"
-                    />
-                  </figure>
-                  <div className="relative flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-slate-300">
-                    <span className="h-2 w-2 rounded-full bg-[#74f7d0]" />
-                    {item.tag}
-                  </div>
-                  <div className="relative mt-6 space-y-4">
-                    <h3 className="font-[var(--font-display)] text-2xl text-white">
-                      {item.headline}
-                    </h3>
-                    <p className="text-sm text-slate-200">{item.description}</p>
-                  </div>
-                  <div className="relative mt-6 rounded-2xl border border-[#74f7d0]/30 bg-[#0b1e33]/80 p-4 text-sm text-[#74f7d0]">
-                    {item.result}
-                  </div>
-                  <div className="relative mt-8 flex items-center justify-between text-xs text-slate-400">
-                    <span>{item.company}</span>
-                    <span className="inline-flex items-center gap-2 text-[#74f7d0]">
-                      Ver detalle
-                      <ArrowIcon className="h-3.5 w-3.5" />
-                    </span>
-                  </div>
-                </motion.article>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        <section id="metodologia" className="mx-auto max-w-6xl px-4 pb-32 sm:px-6">
-          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl space-y-4">
-              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
-                Metodologia
-              </span>
-              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3rem)] leading-tight text-white">
-                Ejecutamos con foco en gobernanza, velocity y adopcion.
-              </h2>
-              <p className="text-sm text-slate-300">
-                Cada etapa se respalda con dashboards, automatizaciones y entregables ejecutivos que habilitan decisiones rapidas.
-              </p>
-            </div>
-            <div className="rounded-full border border-white/10 bg-white/5 px-6 py-3 text-xs uppercase tracking-[0.4em] text-slate-200">
-              Feature flags, analytics, SRE y soporte incluidos
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-10 backdrop-blur">
-            <div className="absolute left-8 top-10 bottom-10 w-px bg-gradient-to-b from-[#74f7d0] via-white/20 to-[#74f7d0]" />
-            <div className="relative grid gap-12">
-              {process.map((step, index) => (
-                <Reveal key={step.phase} delay={index * 0.12} className="relative pl-16">
-                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-[#060c28] font-semibold text-[#74f7d0]">
-                    {String(index + 1).padStart(2, "0")}
-                  </div>
-                  <div className="text-xs uppercase tracking-[0.35em] text-slate-400">
-                    {step.phase}
-                  </div>
-                  <div className="mt-3 font-[var(--font-display)] text-xl text-white">
-                    {step.deliverables}
-                  </div>
-                  <p className="mt-3 text-sm text-slate-300">{step.description}</p>
-                </Reveal>
-              ))}
-            </div>
-            <div className="mt-12 grid gap-6 rounded-3xl border border-white/10 bg-[rgba(5,10,34,0.8)] p-6 sm:grid-cols-3">
-              {principles.map((item) => (
-                <div key={item.title} className="space-y-3 text-sm text-slate-300">
-                  <div className="text-sm font-semibold uppercase tracking-[0.35em] text-[#74f7d0]">
-                    {item.title}
-                  </div>
-                  <p>{item.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="contacto" className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-[radial-gradient(circle_at_top_left,_rgba(116,247,208,0.24),_rgba(5,12,36,0.85))] px-8 py-12 md:px-12">
-            <div className="absolute inset-0 opacity-40 bg-[linear-gradient(120deg,_rgba(51,241,127,0.2),_transparent)]" />
-            <div className="relative grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
-              <div className="space-y-6">
-                <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">
-                  Traccion en 72 horas
-                </span>
-                <h2 className="font-[var(--font-display)] text-[clamp(2.2rem,4vw,3.2rem)] leading-[1.1] text-white">
-                  Kickoff ejecutivo, diagnostico profundo y plan accionable sin friccion.
-                </h2>
-                <p className="max-w-2xl text-sm text-slate-200">
-                  Coordinamos sesiones con tus lideres, conectamos datos claves y levantamos oportunidades con impacto financiero. Te llevas un blueprint completo y un piloto listo para activarse.
+                <p className="text-xs uppercase tracking-[0.3em] text-white/60">{metric.label}</p>
+                <p className="mt-2 text-3xl font-semibold text-white">
+                  {metric.value}
+                  <span className="ml-1 text-base text-emerald-200">{metric.unit}</span>
                 </p>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
-                    <div className="text-xs uppercase tracking-[0.35em] text-slate-300">
-                      Que incluye
-                    </div>
-                    <ul className="mt-3 space-y-2 text-sm text-slate-200">
-                      <li>Diagnostico tecnico y de negocio</li>
-                      <li>Roadmap con milestones y costos</li>
-                      <li>Plan de adopcion y training</li>
-                    </ul>
-                  </div>
-                  <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
-                    <div className="text-xs uppercase tracking-[0.35em] text-slate-300">
-                      Opciones
-                    </div>
-                    <ul className="mt-3 space-y-2 text-sm text-slate-200">
-                      <li>Build with ConsultorIA</li>
-                      <li>Coaching para tu equipo interno</li>
-                      <li>Operamos como squad extendido</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-center gap-4 pt-4">
-                  <Link
-                    href="mailto:jose_cruz_16@live.cl"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-[#041b21] transition hover:bg-[#33f17f]"
-                  >
-                    Escribir ahora
-                    <ArrowIcon className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    href="https://wa.me/56999495174"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
-                  >
-                    Agendar llamada
-                    <ArrowIcon className="h-4 w-4" />
-                  </Link>
-                  <div className="text-xs uppercase tracking-[0.35em] text-slate-300">
-                    Disponible remoto o en sitio
-                  </div>
-                </div>
-              </div>
-              <div className="relative flex flex-col gap-4 rounded-3xl border border-[rgba(116,247,208,0.3)] bg-[rgba(4,10,38,0.9)] p-6">
-                <div className="relative text-xs uppercase tracking-[0.4em] text-[#74f7d0]">
-                  Datos de contacto
-                </div>
-                <div className="relative font-[var(--font-display)] text-2xl text-white">
-                  Jose Miguel Cruz Alvarado
-                </div>
-                <div className="relative grid gap-2 text-sm text-slate-200">
-                  <span>Director ConsultorIA</span>
-                  <span>+56 9 9949 5174</span>
-                  <span>jose_cruz_16@live.cl</span>
-                  <span>Vina del Mar, Chile</span>
-                </div>
-                <div className="relative mt-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-slate-300">
-                  Compromiso: prototipo funcional con tu data en menos de 10 dias habiles.
-                </div>
-                <div className="relative text-xs uppercase tracking-[0.35em] text-[#74f7d0]">
-                  Ready for global
-                </div>
-              </div>
-            </div>
+                <p className="text-sm text-white/60">{metric.description}</p>
+              </motion.div>
+            ))}
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <footer className="relative z-10 mx-auto max-w-6xl px-4 py-12 text-xs text-slate-400 sm:px-6">
-        <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
-          <span>(c) {year} ConsultorIA. Construido desde Vina del Mar, Chile.</span>
-          <div className="flex items-center gap-6">
-            <Link
-              href="mailto:jose_cruz_16@live.cl"
-              className="transition hover:text-[#74f7d0]"
-            >
-              Escribeme
-            </Link>
-            <Link
-              href="https://www.linkedin.com/in/josecruzalvarado"
-              className="transition hover:text-[#74f7d0]"
-            >
-              LinkedIn
-            </Link>
-            <Link href="tel:+56999495174" className="transition hover:text-[#74f7d0]">
-              +56 9 9949 5174
-            </Link>
+      <MotionSection className="mx-auto mt-24 max-w-6xl px-6" id="soluciones">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+          <div>
+            <p className="text-sm uppercase tracking-[0.5em] text-emerald-200">Soluciones</p>
+            <h2 className="mt-2 text-4xl font-semibold text-white">Componentes modulares para cada etapa</h2>
           </div>
+          <p className="text-white/70 lg:w-2/5">
+            Reutilizamos frameworks de estrategia, diseño y automatización para acelerar despliegues y garantizar calidad.
+          </p>
+        </div>
+        <div className="mt-10">
+          <ServiceGrid items={services} />
+        </div>
+      </MotionSection>
+
+      <MotionSection className="mx-auto mt-24 max-w-6xl px-6" id="casos">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+          <div>
+            <p className="text-sm uppercase tracking-[0.5em] text-emerald-200">Casos reales</p>
+            <h2 className="mt-2 text-4xl font-semibold text-white">Escenarios operando hoy</h2>
+          </div>
+          <p className="text-white/70 lg:w-2/5">
+            Sectores con compliance estricto confían en nuestros squads para lanzar IA con gobernanza y KPIs claros.
+          </p>
+        </div>
+        <div className="mt-8">
+          <CaseCarousel items={caseStudies} />
+        </div>
+      </MotionSection>
+
+      <MotionSection className="mx-auto mt-24 max-w-6xl px-6" id="metodologia">
+        <div className="grid gap-6 lg:grid-cols-3">
+          {process.map((step) => (
+            <article key={step.phase} className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <p className="text-xs uppercase tracking-[0.4em] text-white/50">{step.phase}</p>
+              <h3 className="mt-3 text-xl font-semibold text-white">{step.deliverables}</h3>
+              <p className="mt-2 text-white/70">{step.description}</p>
+            </article>
+          ))}
+        </div>
+      </MotionSection>
+
+      <MotionSection className="mx-auto mt-24 max-w-6xl px-6">
+        <div className="grid gap-6 lg:grid-cols-3">
+          {principles.map((principle) => (
+            <article key={principle.title} className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-6">
+              <p className="text-sm text-emerald-200">{principle.title}</p>
+              <p className="mt-3 text-white/70">{principle.description}</p>
+            </article>
+          ))}
+        </div>
+      </MotionSection>
+
+      <MotionSection className="mx-auto mt-24 max-w-6xl px-6">
+        <p className="text-center text-sm uppercase tracking-[0.5em] text-white/50">Aliados y clientes</p>
+        <div className="mt-6 flex flex-wrap justify-center gap-6 text-white/50">
+          {trustedBy.map((brand) => (
+            <span key={brand}>{brand}</span>
+          ))}
+        </div>
+      </MotionSection>
+
+      <MotionSection className="mx-auto mt-24 max-w-6xl px-6">
+        <h2 className="text-3xl font-semibold text-white">Testimonios y badges de confianza</h2>
+        <p className="mt-2 text-white/70">Pruebas sociales para equipos que necesitan respaldo.</p>
+        <div className="mt-8">
+          <TestimonialsMarquee items={testimonials} />
+        </div>
+        <div className="mt-6 flex flex-wrap gap-4 text-sm text-white/70">
+          <span className="rounded-full border border-white/20 px-4 py-2">Clutch 5⭐</span>
+          <span className="rounded-full border border-white/20 px-4 py-2">+98% retención</span>
+          <span className="rounded-full border border-white/20 px-4 py-2">SOC2-ready</span>
+        </div>
+      </MotionSection>
+
+      <MotionSection className="mx-auto mt-24 max-w-6xl items-center gap-8 px-6 lg:flex" id="blog">
+        <div className="flex-1 space-y-3">
+          <p className="text-sm uppercase tracking-[0.5em] text-emerald-200">Recursos</p>
+          <h2 className="text-4xl font-semibold text-white">Hub editorial de IA aplicada</h2>
+          <p className="text-white/70">
+            Explora artículos, checklists y frameworks en el hub de recursos. Cada nota enlaza directamente con nuestro formulario inteligente para convertir interés en acción.
+          </p>
+          <Link href="/recursos" className="inline-flex items-center gap-2 text-emerald-300">
+            Visitar recursos <ArrowIcon className="text-emerald-300" />
+          </Link>
+        </div>
+        <div className="flex-1 rounded-3xl border border-white/10 bg-white/5 p-6">
+          <h3 className="text-2xl font-semibold text-white">Brand guidelines vivas</h3>
+          <p className="mt-2 text-white/70">Consulta los lineamientos oficiales para mantener consistencia en campañas.</p>
+          <Link href="/brand-guidelines" className="mt-4 inline-flex items-center gap-2 text-emerald-300">
+            Abrir guías <ArrowIcon className="text-emerald-300" />
+          </Link>
+        </div>
+      </MotionSection>
+
+      <MotionSection className="mx-auto mt-24 max-w-6xl gap-10 px-6 lg:flex" id="contacto">
+        <div className="flex-1 space-y-4">
+          <p className="text-sm uppercase tracking-[0.5em] text-emerald-200">CTA final</p>
+          <h2 className="text-4xl font-semibold text-white">Formulario inteligente conectado a tu CRM</h2>
+          <p className="text-white/70">
+            Filtramos prospectos por industria, presupuesto y urgencia. Integramos los envíos a tu CRM o data warehouse a través de webhooks seguros.
+          </p>
+          <div className="space-y-2 text-white/70">
+            <p>contacto@consultoria.ai</p>
+            <p>+56 9 1234 5678</p>
+            <p>WhatsApp · Calendly · Teams</p>
+          </div>
+        </div>
+        <div className="flex-1">
+          <ContactForm />
+        </div>
+      </MotionSection>
+
+      <footer className="mx-auto mt-24 flex max-w-6xl flex-col items-center gap-4 px-6 text-center text-sm text-white/50">
+        <div className="h-px w-full bg-white/10" />
+        <p>© {year} ConsultorIA. IA aplicada con experiencias premium.</p>
+        <div className="flex gap-4">
+          <Link href="/docs/analytics">Analytics</Link>
+          <Link href="/docs/performance">Performance</Link>
         </div>
       </footer>
     </div>
