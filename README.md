@@ -3,11 +3,11 @@
 Landing page premium para ConsultorIA, enfocada en presentar servicios enterprise de IA con experiencias de usuario cinematograficas y microinteracciones fluidas.
 
 ## Caracteristicas destacadas
-- Hero inmersivo con parallax, smooth scrolling via Lenis y animaciones Framer Motion.
-- Secciones para soluciones, casos reales y metodologia con contenidos redactados para clientes enterprise.
-- Componentes reutilizables (`Reveal`, `LenisProvider`) y estilos avanzados con Tailwind CSS v4.
-- Cards y timelines con efectos glassmorphism, gradientes dinamicos y foco en performance.
-- Contacto inspirado en la tarjeta corporativa con CTA directos (telefono, correo y WhatsApp).
+- Hero inmersivo con métricas en tiempo real (`/api/metrics`) y header sticky con CTA múltiples.
+- Librería de componentes modulares: tarjetas de servicios/casos, `TestimonialsMarquee`, formulario inteligente con validaciones personalizadas.
+- Blog/recursos (`/recursos`) alimentado desde Markdown local y guías de marca servidas en `/brand-guidelines`.
+- Documentación viva en `/docs/analytics` y `/docs/performance` para auditar eventos y accesibilidad.
+- Contacto con validaciones, lógica condicional y endpoint `/api/contact` listo para integrarse con CRM.
 
 ## Stack tecnico
 - Next.js 15 (App Router, TypeScript).
@@ -38,10 +38,11 @@ pnpm build
 ```
 
 ## Estructura relevante
-- `src/app/page.tsx`: landing completa con todas las secciones.
-- `src/app/globals.css`: tokens de color, fondos y animaciones globales.
-- `src/components/lenis-provider.tsx`: wrapper para smooth scrolling.
-- `src/components/reveal.tsx`: helper para animaciones on-scroll.
+- `src/app/page.tsx`: landing completa con hero dinámico, tarjetas modulares y formulario inteligente.
+- `src/app/recursos/`: hub editorial alimentado por Markdown.
+- `src/app/api/*`: endpoints de métricas y contacto.
+- `src/components/cards/`: ServiceGrid, CaseCarousel y tarjetas reutilizables.
+- `src/components/contact-form.tsx`: formulario con validaciones personalizadas y lógica condicional.
 
 ## Deploy
 Preparada para desplegar en Vercel. Ejecuta `pnpm build` (sin Turbopack) y conecta el repositorio a tu proyecto en Vercel.
