@@ -1,0 +1,7 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="40" rx="8" fill="#0F172A"/>
+  <path d="M22 12C28 18 28 22 22 28" stroke="#A5B4FC" stroke-width="2" stroke-linecap="round"/>
+  <path d="M32 12C38 18 38 22 32 28" stroke="#A5B4FC" stroke-width="2" stroke-linecap="round"/>
+  <text x="50" y="23" fill="#C4B5FD" font-family="'Inter', sans-serif" font-size="12" font-weight="600">Biotech</text>
+  <text x="50" y="33" fill="#818CF8" font-family="'Inter', sans-serif" font-size="10">LATAM</text>
+</svg>

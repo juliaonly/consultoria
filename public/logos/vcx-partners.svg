@@ -1,0 +1,6 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="40" rx="8" fill="#0B1220"/>
+  <path d="M18 12L26 28L34 12" stroke="#34D399" stroke-width="2" stroke-linecap="round"/>
+  <text x="46" y="24" fill="#D1FAE5" font-family="'Inter', sans-serif" font-size="13" font-weight="600">VCX</text>
+  <text x="46" y="34" fill="#6EE7B7" font-family="'Inter', sans-serif" font-size="10">Partners</text>
+</svg>

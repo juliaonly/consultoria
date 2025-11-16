@@ -2,41 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import type { ChangeEvent, FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "../components/reveal";
-
-function ArrowIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      viewBox="0 0 16 16"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M5 11L11 5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M7.75 5H11V8.25"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
+import { CaseCard } from "../components/case-card";
+import { ArrowIcon } from "../components/arrow-icon";
 
 const navigation = [
   { label: "Soluciones", href: "#soluciones" },
+  { label: "Insights", href: "#insights" },
   { label: "Casos", href: "#casos" },
   { label: "Metodologia", href: "#metodologia" },
+  { label: "Comparativo", href: "#comparativo" },
+  { label: "Recursos", href: "#recursos" },
   { label: "Contacto", href: "#contacto" },
 ];
 
@@ -71,6 +50,9 @@ const services = [
     ],
     image: "/illustrations/mockup-architecture.svg",
     imageAlt: "Blueprint ejecutivo y tablero de arquitectura de IA",
+    ctaLabel: "Agenda blueprint",
+    ctaHref: "#contacto",
+    ctaVariant: "primary",
   },
   {
     title: "Ingenieria de experiencias",
@@ -84,6 +66,9 @@ const services = [
     ],
     image: "/illustrations/mockup-experience.svg",
     imageAlt: "Dashboard de experiencia multicanal con modulos interactivos",
+    ctaLabel: "Solicitar workshop",
+    ctaHref: "mailto:jose_cruz_16@live.cl?subject=Workshop%20de%20experiencias",
+    ctaVariant: "secondary",
   },
   {
     title: "Automatizacion full stack",
@@ -97,6 +82,9 @@ const services = [
     ],
     image: "/illustrations/mockup-automation.svg",
     imageAlt: "Panel operativo de automatizacion con agentes y metricas en tiempo real",
+    ctaLabel: "Hablar con un ingeniero",
+    ctaHref: "https://wa.me/56999495174",
+    ctaVariant: "link",
   },
 ];
 
@@ -110,6 +98,8 @@ const caseStudies = [
     tag: "Logistica inteligente",
     image: "/illustrations/mockup-automation.svg",
     imageAlt: "Gemelo digital operando flujos logisticos en tiempo real",
+    ctaLabel: "Profundizar caso",
+    ctaHref: "mailto:jose_cruz_16@live.cl?subject=Atlas%20Maritime%20-%20detalle",
   },
   {
     company: "Nova Health Group",
@@ -120,6 +110,8 @@ const caseStudies = [
     tag: "Salud",
     image: "/illustrations/mockup-experience.svg",
     imageAlt: "Panel de triaje asistido por IA para equipos clinicos",
+    ctaLabel: "Solicitar demo",
+    ctaHref: "mailto:jose_cruz_16@live.cl?subject=Nova%20Health%20-%20triaje",
   },
   {
     company: "Finexus",
@@ -130,6 +122,8 @@ const caseStudies = [
     tag: "Finanzas",
     image: "/illustrations/mockup-architecture.svg",
     imageAlt: "Sala de control financiera con metricas y alertas priorizadas",
+    ctaLabel: "Agenda referencia",
+    ctaHref: "mailto:jose_cruz_16@live.cl?subject=Finexus%20-%20sala%20de%20control",
   },
 ];
 
@@ -173,12 +167,170 @@ const principles = [
 ];
 
 const trustedBy = [
-  "Microsoft for Startups",
-  "AWS Activate",
-  "Gobierno Digital CL",
-  "VCX Partners",
-  "LA New Ventures",
-  "Biotech LATAM",
+  {
+    name: "Microsoft for Startups",
+    logo: "/logos/microsoft-startups.svg",
+    href: "https://www.microsoft.com/startups",
+    type: "Programa",
+  },
+  {
+    name: "AWS Activate",
+    logo: "/logos/aws-activate.svg",
+    href: "https://aws.amazon.com/activate/",
+    type: "Cloud",
+  },
+  {
+    name: "Gobierno Digital CL",
+    logo: "/logos/gobierno-digital.svg",
+    href: "https://www.gob.cl/gobdigital/",
+    type: "Sector publico",
+  },
+  {
+    name: "VCX Partners",
+    logo: "/logos/vcx-partners.svg",
+    href: "https://www.vcxpartners.com/",
+    type: "VC",
+  },
+  {
+    name: "LA New Ventures",
+    logo: "/logos/la-new-ventures.svg",
+    href: "https://lanewventures.com/",
+    type: "Innovacion",
+  },
+  {
+    name: "Biotech LATAM",
+    logo: "/logos/biotech-latam.svg",
+    href: "https://biotechlatam.com/",
+    type: "Salud",
+  },
+];
+
+const testimonials = [
+  {
+    quote:
+      "Pasamos de investigar ideas a lanzar un piloto medible en cuatro semanas. La disciplina del equipo hizo toda la diferencia.",
+    author: "Cristobal Alliende",
+    role: "CTO VCX Partners",
+  },
+  {
+    quote:
+      "Integraron nuestros procesos publicos sin friccion, cuidando seguridad y accesibilidad en cada release.",
+    author: "Daniela Ponce",
+    role: "Directora Gobierno Digital CL",
+  },
+];
+
+const certifications = [
+  {
+    label: "ISO 27001 ready",
+    description: "Controles de seguridad auditables y cifrado extremo a extremo.",
+    icon: "/badges/iso.svg",
+  },
+  {
+    label: "AWS + Azure",
+    description: "Workloads certificados en ambas nubes con FinOps incluido.",
+    icon: "/badges/multi-cloud.svg",
+  },
+  {
+    label: "DesignOps IA",
+    description: "Playbooks de research asistido y governance de prompts.",
+    icon: "/badges/designops.svg",
+  },
+];
+
+const insightCategories = ["Tendencias", "Publicaciones", "Casos recientes"] as const;
+
+const insights = [
+  {
+    title: "GenAI en operaciones criticas",
+    summary: "Checklist para habilitar copilotos en ambientes regulados.",
+    tag: "Tendencias",
+    publishedAt: "Jun 2024",
+    ctaHref: "https://consultoria.local/insights/operaciones",
+  },
+  {
+    title: "Playbook de governance IA",
+    summary: "Framework de roles, riesgos y tableros ejecutivos.",
+    tag: "Publicaciones",
+    publishedAt: "May 2024",
+    ctaHref: "https://consultoria.local/insights/governance",
+  },
+  {
+    title: "Caso fintech: agentes soporte",
+    summary: "Bot que resolvio 68% de tickets sin derivar.",
+    tag: "Casos recientes",
+    publishedAt: "Abr 2024",
+    ctaHref: "https://consultoria.local/insights/fintech",
+  },
+  {
+    title: "Diseño multimodal accesible",
+    summary: "Componentes inclusivos validados con usuarios reales.",
+    tag: "Publicaciones",
+    publishedAt: "Abr 2024",
+    ctaHref: "https://consultoria.local/insights/accesibilidad",
+  },
+  {
+    title: "Tendencias retail IA",
+    summary: "Experiencias hiper personalizadas conectadas con inventario.",
+    tag: "Tendencias",
+    publishedAt: "Mar 2024",
+    ctaHref: "https://consultoria.local/insights/retail",
+  },
+];
+
+const plans = [
+  {
+    name: "Discovery",
+    idealFor: "Equipos que necesitan claridad y roadmap",
+    deliverables: ["Blueprint integral", "Backlog priorizado", "Playbook de riesgos"],
+    outcomes: "Validacion tecnica + business case en 10 dias",
+    badge: "Mas elegido",
+    investment: "Desde 12K USD",
+    ctaLabel: "Reservar discovery",
+    ctaHref: "mailto:jose_cruz_16@live.cl?subject=Discovery%20IA",
+  },
+  {
+    name: "Escala",
+    idealFor: "Empresas con pilotos listos para expandirse",
+    deliverables: ["Arquitectura modular", "Automatizaciones QA", "SRE compartido"],
+    outcomes: "Pasamos de piloto a multi-region en 8 semanas",
+    investment: "Desde 28K USD",
+    ctaLabel: "Co-crear plan",
+    ctaHref: "https://wa.me/56999495174",
+  },
+  {
+    name: "Operaciones",
+    idealFor: "Organizaciones con productos IA en produccion",
+    deliverables: ["Command center", "FinOps + observabilidad", "Soporte 24/7"],
+    outcomes: "SLAs garantizados y costos optimizados",
+    investment: "Retainer mensual",
+    ctaLabel: "Explorar modelo",
+    ctaHref: "mailto:jose_cruz_16@live.cl?subject=Operaciones%20IA",
+  },
+];
+
+const resources = [
+  {
+    title: "Playbook de adopcion IA",
+    description: "Guia paso a paso para alinear negocio, datos y tecnologia.",
+    format: "PDF",
+    file: "playbook-adopcion-ia.pdf",
+    cta: "Descargar",
+  },
+  {
+    title: "Checklist de experiencia multimodal",
+    description: "Evaluacion rapida para auditar accesibilidad y delight.",
+    format: "Notion",
+    file: "checklist-experiencia.notion",
+    cta: "Solicitar acceso",
+  },
+  {
+    title: "Canvas de agentes operativos",
+    description: "Define objetivos, datos y guardrails para tus agentes.",
+    format: "Miro",
+    file: "canvas-agentes.miro",
+    cta: "Copiar",
+  },
 ];
 
 export default function Home() {
@@ -189,6 +341,88 @@ export default function Home() {
   });
   const heroParallax = useTransform(scrollYProgress, [0, 1], [0, -240]);
   const year = new Date().getFullYear();
+  const [selectedCategory, setSelectedCategory] = useState<(typeof insightCategories)[number]>("Tendencias");
+  const filteredInsights = useMemo(
+    () => insights.filter((item) => item.tag === selectedCategory).slice(0, 3),
+    [selectedCategory],
+  );
+  const [activeCaseIndex, setActiveCaseIndex] = useState(0);
+  const [isHoveringCases, setIsHoveringCases] = useState(false);
+  const activeCase = caseStudies[activeCaseIndex];
+  useEffect(() => {
+    if (isHoveringCases) return;
+    const interval = setInterval(() => {
+      setActiveCaseIndex((prev) => (prev + 1) % caseStudies.length);
+    }, 6500);
+    return () => clearInterval(interval);
+  }, [isHoveringCases]);
+  const handlePrevCase = useCallback(() => {
+    setActiveCaseIndex((prev) => (prev - 1 + caseStudies.length) % caseStudies.length);
+  }, []);
+  const handleNextCase = useCallback(() => {
+    setActiveCaseIndex((prev) => (prev + 1) % caseStudies.length);
+  }, []);
+  const handleDotClick = useCallback((index: number) => {
+    setActiveCaseIndex(index);
+  }, []);
+  const [selectedResource, setSelectedResource] = useState(resources[0]);
+  const [formData, setFormData] = useState({ name: "", email: "", company: "" });
+  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [formMessage, setFormMessage] = useState("");
+  const structuredTestimonials = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: testimonials.map((testimonial, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Review",
+          reviewBody: testimonial.quote,
+          author: {
+            "@type": "Person",
+            name: testimonial.author,
+          },
+        },
+      })),
+    }),
+    [],
+  );
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (formStatus !== "idle") {
+      setFormStatus("idle");
+      setFormMessage("");
+    }
+  };
+
+  const handleLeadSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!selectedResource) return;
+    setFormStatus("loading");
+    setFormMessage("");
+    try {
+      const response = await fetch("/api/lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData, resource: selectedResource.title }),
+      });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        throw new Error(payload?.message ?? "No pudimos registrar tu solicitud");
+      }
+      setFormStatus("success");
+      setFormMessage("Listo, enviamos el recurso directo a tu correo.");
+      setFormData({ name: "", email: "", company: "" });
+    } catch (error) {
+      setFormStatus("error");
+      setFormMessage(error instanceof Error ? error.message : "Ocurrio un error inesperado");
+    }
+  };
 
   return (
     <div className="relative isolate overflow-hidden pb-24">
@@ -354,25 +588,131 @@ export default function Home() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5 px-8 py-6 backdrop-blur">
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">
-                Aliados y clientes
-              </span>
-              <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-sm text-slate-200">
-                {trustedBy.map((name) => (
-                  <span
-                    key={name}
-                    className="relative after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:scale-x-0 after:bg-[#74f7d0] after:transition-transform hover:after:scale-x-100"
-                  >
-                    {name}
+          <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5 px-8 py-8 backdrop-blur">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <div className="space-y-2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">
+                    Aliados y clientes
                   </span>
+                  <p className="text-sm text-slate-200">
+                    Casos reales, programas corporativos y partners cloud que avalan nuestra ejecucion.
+                  </p>
+                </div>
+                <div className="text-xs uppercase tracking-[0.4em] text-[#74f7d0]">98% retencion</div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {trustedBy.map((ally) => (
+                  <Link
+                    key={ally.name}
+                    href={ally.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-[#050e2b]/70 px-4 py-3 transition hover:border-[#74f7d0]"
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
+                      <Image
+                        src={ally.logo}
+                        alt={ally.name}
+                        width={40}
+                        height={40}
+                        loading="lazy"
+                        className="h-8 w-auto"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">{ally.name}</div>
+                      <div className="text-xs uppercase tracking-[0.35em] text-slate-400">{ally.type}</div>
+                    </div>
+                    <ArrowIcon className="ml-auto h-3.5 w-3.5 text-[#74f7d0] opacity-0 transition group-hover:opacity-100" />
+                  </Link>
                 ))}
               </div>
-              <div className="hidden sm:flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-[#74f7d0]">
-                98% retencion
+              <div className="grid gap-6 md:grid-cols-2">
+                {testimonials.map((testimonial) => (
+                  <div key={testimonial.author} className="rounded-3xl border border-white/10 bg-[#040b24]/80 p-6">
+                    <p className="text-base text-white">“{testimonial.quote}”</p>
+                    <div className="mt-4 text-sm text-slate-300">
+                      {testimonial.author} · {testimonial.role}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {certifications.map((cert) => (
+                  <div
+                    key={cert.label}
+                    className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-slate-200"
+                  >
+                    <Image src={cert.icon} alt={cert.label} width={20} height={20} loading="lazy" />
+                    <div className="flex flex-col gap-1 text-left normal-case tracking-normal">
+                      <span className="text-xs font-semibold uppercase tracking-[0.35em] text-[#74f7d0]">{cert.label}</span>
+                      <span className="text-[0.78rem] text-slate-200">{cert.description}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        <section id="insights" className="mx-auto max-w-6xl px-4 pb-32 sm:px-6">
+          <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">Tendencias IA</span>
+              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3rem)] leading-tight text-white">
+                Insights accionables para mantener vigente tu roadmap.
+              </h2>
+              <p className="text-sm text-slate-300">
+                Investigacion, learnings y lanzamientos frescos que compartimos con clientes y aliados para tomar decisiones informadas.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3" role="tablist" aria-label="Filtros de insights">
+              {insightCategories.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  role="tab"
+                  aria-selected={selectedCategory === category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] transition ${
+                    selectedCategory === category
+                      ? "border-[#74f7d0] bg-[#74f7d0]/10 text-white"
+                      : "border-white/10 text-slate-300 hover:border-[#74f7d0] hover:text-white"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {filteredInsights.map((item) => (
+              <motion.article
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true }}
+                className="flex h-full flex-col rounded-[28px] border border-white/10 bg-white/5 p-6"
+              >
+                <div className="text-xs uppercase tracking-[0.35em] text-slate-400">{item.tag}</div>
+                <h3 className="mt-4 font-[var(--font-display)] text-2xl text-white">{item.title}</h3>
+                <p className="mt-3 text-sm text-slate-200">{item.summary}</p>
+                <div className="mt-6 flex items-center justify-between text-xs text-slate-400">
+                  <span>{item.publishedAt}</span>
+                  <Link
+                    href={item.ctaHref}
+                    className="inline-flex items-center gap-2 text-[#74f7d0]"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Leer insight
+                    <ArrowIcon className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
           </div>
         </section>
 
@@ -398,50 +738,63 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid gap-8 lg:grid-cols-3">
-            {services.map((service, index) => (
-              <Reveal key={service.title} delay={index * 0.12}>
-                <motion.article
-                  whileHover={{ y: -12 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative flex h-full flex-col gap-5 overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur"
-                >
-                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.12),_rgba(9,16,46,0.9))]" />
-                  </div>
-                  <figure className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#040d23]/60">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.18),_transparent_70%)] opacity-70 transition duration-500 group-hover:opacity-100" />
-                    <Image
-                      src={service.image}
-                      alt={service.imageAlt}
-                      width={320}
-                      height={200}
-                      loading="lazy"
-                      className="relative z-10 h-auto w-full object-cover"
-                      sizes="(min-width: 1024px) 320px, 90vw"
-                    />
-                  </figure>
-                  <span className="text-xs uppercase tracking-[0.35em] text-slate-300">
-                    {service.subtitle}
-                  </span>
-                  <h3 className="font-[var(--font-display)] text-2xl text-white">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-slate-200">{service.description}</p>
-                  <ul className="mt-4 space-y-3 text-sm text-slate-200">
-                    {service.points.map((point) => (
-                      <li key={point} className="flex items-start gap-2">
-                        <span className="mt-[6px] h-1.5 w-1.5 flex-none rounded-full bg-[#74f7d0]" />
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-auto flex items-center justify-between pt-6 text-sm text-[#74f7d0]">
-                    <span>Blueprint inclusivo</span>
-                    <ArrowIcon className="h-4 w-4" />
-                  </div>
-                </motion.article>
-              </Reveal>
-            ))}
+            {services.map((service, index) => {
+              const ctaVariants: Record<string, string> = {
+                primary:
+                  "inline-flex items-center gap-2 rounded-full bg-[#74f7d0] px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#041b21] transition hover:bg-[#33f17f]",
+                secondary:
+                  "inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-5 py-2 text-sm font-semibold text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]",
+                link:
+                  "inline-flex items-center gap-2 text-sm font-semibold text-[#74f7d0] transition hover:text-white",
+              };
+              const ctaClass = ctaVariants[service.ctaVariant ?? "link"] ?? ctaVariants.link;
+              return (
+                <Reveal key={service.title} delay={index * 0.12}>
+                  <motion.article
+                    whileHover={{ y: -12 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="group relative flex h-full flex-col gap-5 overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur"
+                  >
+                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                      <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.12),_rgba(9,16,46,0.9))]" />
+                    </div>
+                    <figure className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#040d23]/60">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.18),_transparent_70%)] opacity-70 transition duration-500 group-hover:opacity-100" />
+                      <Image
+                        src={service.image}
+                        alt={service.imageAlt}
+                        width={320}
+                        height={200}
+                        loading="lazy"
+                        className="relative z-10 h-auto w-full object-cover"
+                        sizes="(min-width: 1024px) 320px, 90vw"
+                      />
+                    </figure>
+                    <span className="text-xs uppercase tracking-[0.35em] text-slate-300">
+                      {service.subtitle}
+                    </span>
+                    <h3 className="font-[var(--font-display)] text-2xl text-white">
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-slate-200">{service.description}</p>
+                    <ul className="mt-4 space-y-3 text-sm text-slate-200">
+                      {service.points.map((point) => (
+                        <li key={point} className="flex items-start gap-2">
+                          <span className="mt-[6px] h-1.5 w-1.5 flex-none rounded-full bg-[#74f7d0]" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-auto pt-6">
+                      <Link href={service.ctaHref} className={ctaClass} data-cta={`service-${service.title}`}>
+                        {service.ctaLabel}
+                        <ArrowIcon className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  </motion.article>
+                </Reveal>
+              );
+            })}
           </div>
         </section>
 
@@ -466,52 +819,60 @@ export default function Home() {
               <ArrowIcon className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid gap-8 lg:grid-cols-3">
-            {caseStudies.map((item, index) => (
-              <Reveal key={item.company} delay={index * 0.12}>
-                <motion.article
-                  whileHover={{ y: -12 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(10,16,46,0.72)] p-8 backdrop-blur"
+          <div
+            className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(10,16,46,0.72)] p-8 backdrop-blur"
+            onMouseEnter={() => setIsHoveringCases(true)}
+            onMouseLeave={() => setIsHoveringCases(false)}
+          >
+            <div className="overflow-hidden" aria-live="polite">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeCase.company}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute inset-[1px] rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(116,247,208,0.16),_rgba(9,14,40,0.9))]" />
-                  </div>
-                  <figure className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#040d23]/60">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(51,241,127,0.16),_transparent_70%)] opacity-70 transition duration-500 group-hover:opacity-100" />
-                    <Image
-                      src={item.image}
-                      alt={item.imageAlt}
-                      width={320}
-                      height={200}
-                      loading="lazy"
-                      className="relative z-10 h-auto w-full object-cover"
-                      sizes="(min-width: 1024px) 320px, 90vw"
-                    />
-                  </figure>
-                  <div className="relative flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-slate-300">
-                    <span className="h-2 w-2 rounded-full bg-[#74f7d0]" />
-                    {item.tag}
-                  </div>
-                  <div className="relative mt-6 space-y-4">
-                    <h3 className="font-[var(--font-display)] text-2xl text-white">
-                      {item.headline}
-                    </h3>
-                    <p className="text-sm text-slate-200">{item.description}</p>
-                  </div>
-                  <div className="relative mt-6 rounded-2xl border border-[#74f7d0]/30 bg-[#0b1e33]/80 p-4 text-sm text-[#74f7d0]">
-                    {item.result}
-                  </div>
-                  <div className="relative mt-8 flex items-center justify-between text-xs text-slate-400">
-                    <span>{item.company}</span>
-                    <span className="inline-flex items-center gap-2 text-[#74f7d0]">
-                      Ver detalle
-                      <ArrowIcon className="h-3.5 w-3.5" />
-                    </span>
-                  </div>
-                </motion.article>
-              </Reveal>
-            ))}
+                  <CaseCard caseStudy={activeCase} />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handlePrevCase}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-slate-100 transition hover:border-[#74f7d0]"
+                  aria-label="Ver caso anterior"
+                >
+                  <ArrowIcon className="h-4 w-4 rotate-180" />
+                  Anterior
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextCase}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-slate-100 transition hover:border-[#74f7d0]"
+                  aria-label="Ver siguiente caso"
+                >
+                  Siguiente
+                  <ArrowIcon className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                {caseStudies.map((item, index) => (
+                  <button
+                    key={item.company}
+                    type="button"
+                    onClick={() => handleDotClick(index)}
+                    className={`h-2.5 w-2.5 rounded-full transition ${
+                      activeCaseIndex === index ? "bg-[#74f7d0] scale-125" : "bg-white/30 hover:bg-white/60"
+                    }`}
+                    aria-label={`Mostrar caso ${item.company}`}
+                    aria-pressed={activeCaseIndex === index}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -560,6 +921,176 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section id="comparativo" className="mx-auto max-w-7xl px-4 pb-32 sm:px-6">
+          <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">Planes</span>
+              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3.2rem)] leading-tight text-white">
+                Selecciona el acompañamiento ideal segun tu madurez.
+              </h2>
+              <p className="text-sm text-slate-300">
+                Todos los planes incluyen governance, analytics y soporte directo del squad fundador. Escala cuando lo necesites.
+              </p>
+            </div>
+            <div className="rounded-full border border-white/10 bg-white/5 px-6 py-3 text-xs uppercase tracking-[0.4em] text-slate-200">
+              KPIs compartidos y revisiones semanales
+            </div>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {plans.map((plan) => (
+              <div key={plan.name} className="flex h-full flex-col rounded-[28px] border border-white/10 bg-white/5 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs uppercase tracking-[0.35em] text-slate-400">{plan.name}</div>
+                    <h3 className="mt-2 text-xl font-semibold text-white">{plan.idealFor}</h3>
+                  </div>
+                  {plan.badge && (
+                    <span className="rounded-full border border-[#74f7d0]/40 bg-[#74f7d0]/10 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-[#74f7d0]">
+                      {plan.badge}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-6 space-y-3">
+                  <div className="text-xs uppercase tracking-[0.35em] text-slate-400">Entregables</div>
+                  <ul className="space-y-2 text-sm text-slate-200">
+                    {plan.deliverables.map((deliverable) => (
+                      <li key={deliverable} className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 flex-none rounded-full bg-[#74f7d0]" />
+                        <span>{deliverable}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mt-6 rounded-2xl border border-white/10 bg-[#050f2b]/80 p-4 text-sm text-slate-200">
+                  <div className="text-xs uppercase tracking-[0.35em] text-[#74f7d0]">Outcome esperado</div>
+                  <p className="mt-2 text-base text-white">{plan.outcomes}</p>
+                </div>
+                <div className="mt-6 text-sm text-slate-300">{plan.investment}</div>
+                <div className="mt-auto pt-6">
+                  <Link
+                    href={plan.ctaHref}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-4 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-[#d7e7ff] transition hover:border-[#74f7d0] hover:text-[#74f7d0]"
+                  >
+                    {plan.ctaLabel}
+                    <ArrowIcon className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="recursos" className="mx-auto max-w-6xl px-4 pb-32 sm:px-6">
+          <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[#74f7d0]">Recursos premium</span>
+              <h2 className="font-[var(--font-display)] text-[clamp(2rem,4vw,3.1rem)] leading-tight text-white">
+                Descarga frameworks y playbooks exclusivos.
+              </h2>
+              <p className="text-sm text-slate-300">
+                Cada descarga incluye acompanamiento directo para aclarar dudas y llevarlo a tu contexto.
+              </p>
+            </div>
+            <div className="text-xs uppercase tracking-[0.35em] text-slate-300">Sin spam, solo valor accionable</div>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {resources.map((resource) => {
+                const isActive = selectedResource?.title === resource.title;
+                return (
+                  <button
+                    type="button"
+                    key={resource.title}
+                    onClick={() => setSelectedResource(resource)}
+                    className={`text-left transition ${
+                      isActive
+                        ? "rounded-[28px] border border-[#74f7d0] bg-[#74f7d0]/10"
+                        : "rounded-[28px] border border-white/10 bg-white/5 hover:border-[#74f7d0]/60"
+                    } p-6`}
+                    aria-pressed={isActive}
+                  >
+                    <div className="text-xs uppercase tracking-[0.35em] text-slate-400">{resource.format}</div>
+                    <h3 className="mt-3 font-[var(--font-display)] text-2xl text-white">{resource.title}</h3>
+                    <p className="mt-2 text-sm text-slate-200">{resource.description}</p>
+                    <div className="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-[#74f7d0]">
+                      {resource.cta}
+                      <ArrowIcon className="h-3.5 w-3.5" />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            <form
+              onSubmit={handleLeadSubmit}
+              className="relative flex flex-col gap-4 rounded-[32px] border border-white/10 bg-white/5 p-6"
+            >
+              <div>
+                <div className="text-xs uppercase tracking-[0.35em] text-[#74f7d0]">Recibelo en tu correo</div>
+                <p className="mt-2 text-sm text-slate-200">
+                  Seleccionado: <span className="font-semibold text-white">{selectedResource?.title}</span>
+                </p>
+              </div>
+              <label className="text-sm text-slate-300">
+                Nombre completo
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-[#030918] px-4 py-3 text-white focus:border-[#74f7d0] focus:outline-none"
+                />
+              </label>
+              <label className="text-sm text-slate-300">
+                Email corporativo
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-[#030918] px-4 py-3 text-white focus:border-[#74f7d0] focus:outline-none"
+                />
+              </label>
+              <label className="text-sm text-slate-300">
+                Empresa
+                <input
+                  type="text"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-[#030918] px-4 py-3 text-white focus:border-[#74f7d0] focus:outline-none"
+                />
+              </label>
+              <button
+                type="submit"
+                disabled={formStatus === "loading"}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#74f7d0] px-6 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-[#041b21] transition hover:bg-[#33f17f] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {formStatus === "loading" ? "Enviando..." : "Recibir recurso"}
+                <ArrowIcon className="h-4 w-4" />
+              </button>
+              <p className="text-xs text-slate-400">
+                Al enviar aceptas nuestra politica de privacidad y recibir actualizaciones relevantes. Nada de spam.
+              </p>
+              {formMessage && (
+                <div
+                  className={`rounded-2xl border px-4 py-3 text-sm ${
+                    formStatus === "success"
+                      ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-200"
+                      : "border-red-400/40 bg-red-400/10 text-red-200"
+                  }`}
+                  role="status"
+                  aria-live="polite"
+                >
+                  {formMessage}
+                </div>
+              )}
+            </form>
           </div>
         </section>
 
@@ -643,6 +1174,11 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredTestimonials) }}
+      />
 
       <footer className="relative z-10 mx-auto max-w-6xl px-4 py-12 text-xs text-slate-400 sm:px-6">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
