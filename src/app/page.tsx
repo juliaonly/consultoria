@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import type { ChangeEvent, FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -127,7 +128,7 @@ const caseStudies = [
   },
 ];
 
-const process = [
+const processSteps = [
   {
     phase: "1. Descubrimiento inmersivo",
     deliverables: "Insights accionables + mapa de valor",
@@ -896,7 +897,7 @@ export default function Home() {
           <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-10 backdrop-blur">
             <div className="absolute left-8 top-10 bottom-10 w-px bg-gradient-to-b from-[#74f7d0] via-white/20 to-[#74f7d0]" />
             <div className="relative grid gap-12">
-              {process.map((step, index) => (
+              {processSteps.map((step, index) => (
                 <Reveal key={step.phase} delay={index * 0.12} className="relative pl-16">
                   <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-[#060c28] font-semibold text-[#74f7d0]">
                     {String(index + 1).padStart(2, "0")}
@@ -1175,8 +1176,10 @@ export default function Home() {
         </section>
       </main>
 
-      <script
+      <Script
+        id="structured-testimonials"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredTestimonials) }}
       />
 
