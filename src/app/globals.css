@@ -15,6 +15,9 @@
 :root {
   color-scheme: dark;
   background-color: var(--color-background);
+  --gradient-sky: radial-gradient(circle at 18% 16%, rgba(92, 244, 206, 0.22), transparent 58%);
+  --gradient-abyss: radial-gradient(circle at 78% 8%, rgba(62, 132, 245, 0.2), transparent 55%);
+  --gradient-core: linear-gradient(180deg, rgba(2, 3, 16, 0.96) 0%, rgba(3, 10, 30, 0.98) 36%, rgba(5, 16, 44, 1) 100%);
 }
 
 * {
@@ -24,9 +27,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at 20% 20%, rgba(116, 247, 208, 0.12), transparent 55%),
-    radial-gradient(circle at 80% 0%, rgba(51, 241, 127, 0.08), transparent 50%),
-    linear-gradient(180deg, #03051f 0%, #01010d 35%, #050924 100%);
+  background: var(--gradient-sky), var(--gradient-abyss), var(--gradient-core);
   color: var(--color-foreground);
   font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   letter-spacing: 0.01em;
@@ -67,8 +68,8 @@ html {
 @layer components {
   .glass {
     border: 1px solid rgba(148, 163, 184, 0.14);
-    background: linear-gradient(135deg, rgba(5, 11, 40, 0.76), rgba(13, 24, 62, 0.4));
-    box-shadow: 0 20px 40px rgba(5, 16, 41, 0.45);
+    background: linear-gradient(135deg, rgba(5, 11, 40, 0.78), rgba(13, 27, 58, 0.42));
+    box-shadow: var(--shadow-glow);
   }
 
   .hide-scrollbar {
