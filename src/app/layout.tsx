@@ -1,35 +1,66 @@
-import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Manrope, Source_Sans_3 } from "next/font/google";
 import { LenisProvider } from "../components/lenis-provider";
 import "./globals.css";
 
-const inter = Inter({
+const sourceSans = Source_Sans_3({
   variable: "--font-body",
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
+const manrope = Manrope({
   variable: "--font-display",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "ConsultorIA - Inteligencia aplicada a tus productos digitales",
+  title: "ConsultorIA | Estrategia, experiencia y automatizacion IA",
   description:
-    "ConsultorIA integra inteligencia artificial y diseno para crear experiencias web y soluciones empresariales a medida.",
+    "ConsultorIA ayuda a equipos corporativos a definir estrategia, disenar experiencias y activar automatizacion IA con criterio ejecutivo y ritmo de entrega real.",
   metadataBase: new URL("https://consultoria.josecruz.cl"),
   alternates: {
     canonical: "/",
   },
+  keywords: [
+    "consultoria IA",
+    "automatizacion IA",
+    "experiencia digital corporativa",
+    "estrategia de producto IA",
+    "consultoria tecnologia chile",
+  ],
   openGraph: {
-    title: "ConsultorIA",
+    title: "ConsultorIA | Estrategia, experiencia y automatizacion IA",
     description:
-      "Soluciones empresariales impulsadas por IA que combinan estrategia, diseno y desarrollo full-stack.",
+      "Direccion, experiencia y automatizacion IA para equipos que necesitan una ruta ejecutable, no solo una prueba aislada.",
     url: "https://consultoria.josecruz.cl",
     siteName: "ConsultorIA",
     locale: "es_CL",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "ConsultorIA | Estrategia, experiencia y automatizacion IA",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "ConsultorIA | Estrategia, experiencia y automatizacion IA",
+    description:
+      "Consultoria premium para definir, prototipar y escalar productos y operaciones con IA.",
+    images: ["/opengraph-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#060816",
 };
 
 export default function RootLayout({
@@ -39,7 +70,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased bg-slate-950 text-slate-100`}>
+      <body className={`${sourceSans.variable} ${manrope.variable} antialiased bg-[var(--color-background)] text-[var(--color-foreground)]`}>
         <LenisProvider>{children}</LenisProvider>
       </body>
     </html>

@@ -1,0 +1,12 @@
+   ▲ Next.js 15.5.4
+   - Local:        http://localhost:3010
+   - Network:      http://192.168.1.2:3010
+
+ ✓ Starting...
+ ✓ Ready in 1210ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1243ms (1482 modules)
+ GET / 200 in 1596ms
+ ✓ Compiled /favicon.ico in 411ms (837 modules)
+ GET /favicon.ico 200 in 490ms
+ GET / 200 in 210ms

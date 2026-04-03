@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { spawn } = require("node:child_process");
 const path = require("node:path");
 
@@ -33,13 +34,25 @@ const nodeOptions = [process.env.NODE_OPTIONS, `--require ${patchModule}`]
   .filter(Boolean)
   .join(" ");
 
-const spawnArgs = ["exec", "next", command, ...commandArgs];
-const child = spawn("pnpm", spawnArgs, {
-  shell: process.platform === "win32",
+const repoRoot = path.resolve(__dirname, "..");
+const nextBin = path.join(repoRoot, "node_modules", "next", "dist", "bin", "next");
+const eslintBin = path.join(repoRoot, "node_modules", "eslint", "bin", "eslint.js");
+const isLint = command === "lint";
+
+const runnerScript = isLint ? eslintBin : nextBin;
+const runnerArgs = isLint
+  ? [runnerScript, ".", "--max-warnings=0", ...commandArgs]
+  : [runnerScript, command, ...commandArgs];
+
+const child = spawn(process.execPath, runnerArgs, {
   env: {
     ...process.env,
-    NEXT_DISABLE_TRACE: "1",
-    NODE_OPTIONS: nodeOptions,
+    ...(isLint
+      ? {}
+      : {
+          NEXT_DISABLE_TRACE: "1",
+          NODE_OPTIONS: nodeOptions,
+        }),
   },
   stdio: "inherit",
 });

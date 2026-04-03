@@ -12,6 +12,13 @@ const options: LenisOptions = {
 
 export function LenisProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) {
+      return;
+    }
+
     const lenis = new Lenis(options);
     let frame = requestAnimationFrame(loop);
 

@@ -9,6 +9,11 @@
     "build:turbopack": "node ./scripts/run-next.js build --turbopack",
     "start": "node ./scripts/run-next.js start",
     "lint": "node ./scripts/run-next.js lint",
+    "ux:prepare": "node ./scripts/ux-refactor-prep.mjs",
+    "ux:design-system": "node ./scripts/ux-refactor-prep.mjs --design-only",
+    "ux:inventory": "node ./scripts/ux-refactor-prep.mjs --inventory-only",
+    "ux:brief": "node ./scripts/ux-refactor-prep.mjs --brief-only",
+    "ux:search": "node ./scripts/ux-skill-search.mjs",
     "vercel:link": "pnpm dlx vercel link --yes",
     "deploy:preview": "pnpm dlx vercel --prebuilt",
     "deploy:prod": "pnpm dlx vercel deploy --prod --prebuilt || pnpm dlx vercel --prod"
