@@ -1,6 +1,6 @@
 # ConsultorIA Design System
 
-Last aligned: 2026-04-02
+Last aligned: 2026-04-06
 Scope: Home-first marketing system for a premium B2B AI consultancy.
 
 ## North Star

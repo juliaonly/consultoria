@@ -1,14 +1,14 @@
-"use client";
-
 import Link from "next/link";
 import { ArrowIcon } from "@/components/icons";
 import { contactInfo, engagementModels, kickoffIncludes } from "@/data/content";
+import { getDiagnosticMailto, getPhoneHref, getWhatsappHref } from "@/lib/contact";
 
 export function Footer() {
   const year = new Date().getFullYear();
-  const diagnosticMailto = `mailto:${contactInfo.email}?subject=${encodeURIComponent(contactInfo.diagnosticEmailSubject)}`;
+  const diagnosticMailto = getDiagnosticMailto();
+  const phoneHref = getPhoneHref();
   const linkedInHref = contactInfo.linkedin;
-  const directAgendaHref = `https://wa.me/${contactInfo.phone.replace(/[^0-9]/g, "")}`;
+  const directAgendaHref = getWhatsappHref();
 
   return (
     <>
@@ -22,12 +22,12 @@ export function Footer() {
               <div>
                 <span className="section-kicker">Contacto</span>
                 <h2 className="text-balance font-[var(--font-display)] text-[clamp(2.5rem,4vw,3.5rem)] leading-[1.1] text-white">
-                  Un primer sprint con claridad ejecutiva y una ruta que el equipo pueda sostener.
+                  Un primer sprint con claridad ejecutiva, una salida visible y una ruta que el equipo pueda sostener.
                 </h2>
               </div>
 
               <p className="max-w-2xl text-base leading-relaxed text-[color:var(--color-muted-strong)]">
-                Coordinamos sesiones con liderazgo, conectamos datos clave y levantamos oportunidades con impacto operativo real. La salida no es una presentacion; es un plan accionable con prioridades y siguiente paso visible.
+                Coordinamos sesiones con liderazgo, conectamos datos clave y aterrizamos oportunidades que valga la pena validar. La salida no es una presentacion; es un plan accionable con prioridades, ownership y siguiente paso visible.
               </p>
 
               <div className="grid gap-5 sm:grid-cols-2">
@@ -77,7 +77,7 @@ export function Footer() {
                 </Link>
                 <div className="rounded-full border border-white/12 bg-white/[0.06] px-4 py-2 text-[10px] font-medium uppercase tracking-[0.35em] text-slate-300">
                   <span className="mr-2 inline-block h-2 w-2 rounded-full bg-green-500" />
-                  Disponible remoto o en sitio
+                  Chile, LatAm y trabajo remoto
                 </div>
               </div>
             </div>
@@ -97,7 +97,7 @@ export function Footer() {
               </div>
 
               <div className="relative mb-2 mt-4 grid gap-4 text-sm text-[color:var(--color-muted-strong)]">
-                <a href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`} className="group flex items-center gap-4 transition hover:text-white">
+                <a href={phoneHref} className="group flex items-center gap-4 transition hover:text-white">
                   <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[var(--color-accent)] group-hover:bg-[rgba(142,217,208,0.12)]">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                   </span>
@@ -115,6 +115,17 @@ export function Footer() {
                   </span>
                   {contactInfo.location}
                 </div>
+                <Link
+                  href={linkedInHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 transition hover:text-white"
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[var(--color-accent)] group-hover:bg-[rgba(142,217,208,0.12)]">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6Z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                  </span>
+                  LinkedIn
+                </Link>
               </div>
 
               <div className="relative mt-auto rounded-[22px] border border-[rgba(182,239,232,0.12)] bg-[rgba(255,255,255,0.05)] p-5 text-sm leading-relaxed text-[color:var(--color-muted-strong)]">
@@ -138,7 +149,7 @@ export function Footer() {
               href={diagnosticMailto}
               className="group flex items-center gap-2 transition hover:text-[var(--color-accent)]"
             >
-              Escribeme
+              Solicitar diagnostico
               <span className="h-px w-0 bg-[var(--color-accent)] transition-all duration-300 group-hover:w-4" />
             </Link>
             <Link

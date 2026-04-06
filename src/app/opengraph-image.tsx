@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
+import { site } from "@/config/site";
 
-export const alt = "ConsultorIA | Estrategia, experiencia y automatizacion IA";
+export const alt = site.title;
 export const size = {
   width: 1200,
   height: 630,
@@ -8,9 +9,9 @@ export const size = {
 export const contentType = "image/png";
 
 const pillars = [
-  "Estrategia con criterio ejecutivo",
-  "Experiencias claras para decidir",
-  "Automatizacion con resguardos operativos",
+  "Diagnostico con foco ejecutivo",
+  "Piloto visible y medible",
+  "Gobierno tecnico para escalar",
 ];
 
 export default function OpengraphImage() {
@@ -145,7 +146,7 @@ export default function OpengraphImage() {
                   background: "#8ED9D0",
                 }}
               />
-              Consultoria corporativa
+              consultoria corporativa
             </div>
           </div>
 
@@ -188,7 +189,7 @@ export default function OpengraphImage() {
                     boxShadow: "0 0 0 8px rgba(142,217,208,0.12)",
                   }}
                 />
-                Estrategia, experiencia y automatizacion
+                estrategia, experiencia y automatizacion
               </div>
               <div
                 style={{
@@ -201,7 +202,7 @@ export default function OpengraphImage() {
                   textWrap: "balance",
                 }}
               >
-                IA aplicada con ritmo ejecutivo y base real para escalar.
+                Ruta IA con foco ejecutivo y base real para escalar.
               </div>
               <div
                 style={{
@@ -212,7 +213,7 @@ export default function OpengraphImage() {
                   color: "#D6DEEB",
                 }}
               >
-                Consultoria premium para pasar de la exploracion a un piloto gobernable, medible y listo para operar.
+                Consultoria para pasar de la exploracion dispersa a un piloto gobernable, medible y listo para operar.
               </div>
             </div>
 

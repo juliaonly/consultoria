@@ -1,6 +1,6 @@
 # Home Page Overrides
 
-Last aligned: 2026-04-02
+Last aligned: 2026-04-06
 Route: `src/app/page.tsx`
 
 ## Purpose
